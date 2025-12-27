@@ -3,7 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>로또 번호 생성기</title>
+
+  <!-- SEO -->
+  <title>로또 번호 생성기 | 제외 번호 선택</title>
+  <meta name="description" content="원하지 않는 번호를 제외하고 로또 번호 6개를 빠르게 생성합니다." />
+  <link rel="canonical" href="https://sharonkim12.github.io/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="로또 번호 생성기 | 제외 번호 선택" />
+  <meta property="og:description" content="원하지 않는 번호를 제외하고 6개 번호를 즉시 생성합니다." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sharonkim12.github.io/" />
 
   <style>
     :root{
@@ -16,6 +26,7 @@
       --accent:#22c55e;
       --accent2:#16a34a;
       --danger:#ef4444;
+      --dangerBg: rgba(239,68,68,.16);
       --shadow: 0 18px 40px rgba(0,0,0,.35);
       --radius: 18px;
 
@@ -43,7 +54,7 @@
     .wrap{
       max-width: 980px;
       margin: 0 auto;
-      padding: 14px 14px 120px;
+      padding: 14px 14px 210px;
     }
 
     header{
@@ -56,12 +67,10 @@
       font-size: var(--h1);
       font-weight: 950;
       letter-spacing: -0.02em;
-      line-height: 1.1;
     }
     .subtitle{
       font-size: var(--p);
       color: var(--muted);
-      line-height: 1.45;
     }
 
     .grid{
@@ -70,7 +79,7 @@
       gap: 14px;
     }
     @media (min-width: 920px){
-      .grid{ grid-template-columns: 1.1fr .9fr; align-items:start; }
+      .grid{ grid-template-columns: 1.1fr .9fr; }
     }
 
     .card{
@@ -78,25 +87,13 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      overflow:hidden;
     }
+
     .hd{
-      padding: 14px 14px 10px;
+      padding: 14px;
       border-bottom: 1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.10);
     }
-    .hd h2{
-      margin:0;
-      font-size: clamp(18px, 3.5vw, 22px);
-      font-weight: 950;
-      letter-spacing:-0.01em;
-    }
-    .hd p{
-      margin: 6px 0 0;
-      font-size: var(--p);
-      color: var(--muted);
-      line-height:1.5;
-    }
+
     .bd{ padding: 14px; }
 
     .row{
@@ -105,94 +102,78 @@
       flex-wrap:wrap;
       align-items:center;
       justify-content:space-between;
-      margin-top: 10px;
+      margin-bottom: 10px;
     }
+
     .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 12px;
+      padding: 10px 14px;
       border-radius: 999px;
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.12);
-      font-size: clamp(14px, 3.4vw, 16px);
       font-weight: 900;
-      color: rgba(255,255,255,.92);
     }
-    .pill strong{ font-size: clamp(16px, 4.0vw, 20px); }
 
     .btn{
       width:100%;
-      border:0;
-      cursor:pointer;
+      padding: 14px;
       border-radius: 18px;
+      border: 0;
+      cursor:pointer;
       font-weight: 950;
-      letter-spacing:-0.01em;
-      user-select:none;
-      transition: transform .06s ease, filter .12s ease, opacity .12s ease;
     }
-    .btn:active{ transform: scale(.995); }
 
     .btn-main{
-      padding: 18px 16px;
       font-size: var(--btn);
       background: linear-gradient(180deg, var(--accent), var(--accent2));
       color: #06230f;
-      box-shadow: 0 14px 28px rgba(34,197,94,.22);
     }
+
     .btn-ghost{
-      padding: 12px 12px;
-      font-size: clamp(14px, 3.4vw, 16px);
       background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.92);
       border: 1px solid rgba(255,255,255,.14);
-      opacity: .95;
+      color: rgba(255,255,255,.92);
     }
 
-    /* ====== 결과 공 ====== */
-    .results{
-      display:flex;
-      flex-direction:column;
-      gap: 12px;
-      margin-top: 12px;
+    .btn-danger{
+      background: var(--dangerBg);
+      border: 1px solid rgba(239,68,68,.45);
+      color: #ffd1d1;
     }
-    .result{
-      padding: 12px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
+
+    /* 번호 그리드 (모바일: 9x5 = 45개) */
+    .num-grid{
+      display:grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 6px;
     }
-    .result-top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .idx{
-      font-size: clamp(14px, 3.8vw, 16px);
+
+    .num{
+      height: 9.5vw;
+      min-height: 38px;
+      max-height: 54px;
+      font-size: 4.2vw;
       font-weight: 1000;
-      color: rgba(255,255,255,.95);
-    }
-    .copy{
-      padding: 10px 12px;
       border-radius: 14px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
-      color: rgba(255,255,255,.92);
-      font-weight: 1000;
-      font-size: clamp(13px, 3.4vw, 14px);
-      cursor:pointer;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
     }
 
-    .balls{
-      display:flex;
-      gap: var(--gap);
-      overflow-x:auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 6px;
-      align-items:center;
+    .num.is-off{
+      background: rgba(239,68,68,.18);
+      border-color: rgba(239,68,68,.45);
+      color: #ffd1d1;
     }
+
+    @media (min-width: 520px){
+      .num-grid{ grid-template-columns: repeat(6,1fr); gap: 10px; }
+      .num{ height: 78px; font-size: 26px; border-radius: 22px; }
+    }
+
+    .results{ margin-top: 10px; display:flex; flex-direction:column; gap:10px; }
+    .result{ padding: 12px; border-radius: 18px; background: rgba(255,255,255,.06); }
+
+    .balls{ display:flex; gap: var(--gap); }
     .ball{
       width: var(--ball);
       height: var(--ball);
@@ -202,321 +183,137 @@
       justify-content:center;
       font-size: var(--ballFont);
       font-weight: 1000;
-      background:
-        radial-gradient(circle at 30% 28%, rgba(255,255,255,.24), rgba(255,255,255,.10) 35%, rgba(255,255,255,.08) 60%),
-        rgba(255,255,255,.10);
-      border: 2px solid rgba(255,255,255,.22);
-      box-shadow: inset 0 10px 18px rgba(255,255,255,.06), 0 10px 22px rgba(0,0,0,.26);
-      user-select:none;
-    }
-    .ball.isRolling{ filter: blur(.25px); opacity:.95; }
-    .ball.pop{ animation: pop .18s ease-out both; }
-    @keyframes pop{
-      from{ transform: scale(.96); opacity:.85; }
-      to{ transform: scale(1); opacity:1; }
+      background: rgba(255,255,255,.12);
     }
 
-    /* ====== 모바일 “한 화면에 45개” 그리드 ======
-       9열 × 5행 = 45개 고정
-       화면 높이에 맞추려고 타일 높이를 vw로 제어
-    */
-    .num-grid{
-      display:grid;
-      grid-template-columns: repeat(9, 1fr);
-      gap: 6px;
+    /* 하단 광고 */
+    .adBar{
+      position: fixed;
+      left:0; right:0;
+      bottom:80px;
+      padding:10px;
+      background: rgba(7,16,24,.9);
     }
-
-    .num{
-      height: 9.5vw;          /* 화면 높이에 맞게 */
-      max-height: 54px;       /* 너무 커지지 않게 */
-      min-height: 38px;       /* 너무 작아지지 않게 */
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      font-weight: 1000;
-      font-size: 4.2vw;       /* 숫자 가독성 최대 */
-      max-font-size: 22px;
+    .adSlot{
+      height:60px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
       display:flex;
       align-items:center;
       justify-content:center;
-      cursor:pointer;
-      position:relative;
-      line-height:1;
-      user-select:none;
+      color:rgba(255,255,255,.4);
+      font-weight:900;
     }
-    @media (min-width: 520px){
-      /* 태블릿/PC: 기존처럼 6열로 넓게 */
-      .num-grid{ grid-template-columns: repeat(6, 1fr); gap: 10px; }
-      .num{
-        height: 78px;
-        font-size: 26px;
-        border-radius: 22px;
-      }
-    }
-
-    .num.is-off{
-      background: rgba(239,68,68,.14);
-      border-color: rgba(239,68,68,.38);
-      color: #ffd1d1;
-    }
-    /* 모바일에서 '제외' 글자 없애고 색으로만 구분(공간 확보) */
-    @media (max-width: 520px){
-      .num.is-off::after{ content:""; }
-    }
-    /* PC에선 '제외' 표시 유지 */
-    @media (min-width: 521px){
-      .num.is-off::after{
-        content:"제외";
-        position:absolute;
-        bottom: 10px;
-        font-size: 14px;
-        font-weight: 950;
-        opacity:.95;
-      }
-      .num{ padding-bottom: 18px; }
-    }
-
-    .warn{
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 16px;
-      background: rgba(239,68,68,.12);
-      border: 1px solid rgba(239,68,68,.24);
-      color: rgba(255,255,255,.95);
-      font-size: var(--p);
-      font-weight: 850;
-      line-height: 1.5;
-      display:none;
-    }
-    .warn.show{ display:block; }
 
     .stickyBar{
       position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 12px;
-      background: linear-gradient(180deg, rgba(7,16,24,0), rgba(7,16,24,.92) 28%, rgba(7,16,24,.98));
-      backdrop-filter: blur(6px);
-      border-top: 1px solid rgba(255,255,255,.10);
-      z-index: 50;
+      left:0; right:0; bottom:0;
+      padding:12px;
+      background: rgba(7,16,24,.96);
     }
-    .stickyInner{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 0 14px;
-      display:flex;
-      gap: 10px;
-    }
-    .stickyInner .btn-main{ flex: 1; }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <div class="title">로또 번호 생성기</div>
-      <div class="subtitle">제외할 번호를 선택한 뒤, 아래 버튼을 누르시면 번호가 생성됩니다.</div>
-    </header>
+<div class="wrap">
+  <header>
+    <div class="title">로또 번호 생성기</div>
+    <div class="subtitle">제외할 번호를 선택한 뒤 번호를 생성하세요.</div>
+  </header>
 
-    <div class="grid">
-      <section class="card">
-        <div class="hd">
-          <h2>생성 결과</h2>
-          <p>번호는 공 안에 표시됩니다.</p>
+  <div class="grid">
+    <section class="card">
+      <div class="hd"><strong>생성 결과</strong></div>
+      <div class="bd">
+        <div class="row">
+          <span class="pill">제외 <strong id="excludedCount">0</strong>개</span>
+          <button id="btnClear" class="btn btn-ghost">제외 전부 해제</button>
         </div>
-        <div class="bd">
-          <div class="row">
-            <span class="pill">제외 <strong id="excludedCount">0</strong>개</span>
-            <button id="btnClear" class="btn btn-ghost" type="button">제외 해제</button>
-          </div>
+        <div class="row">
+          <button id="btnReset" class="btn btn-danger">초기화</button>
+        </div>
+        <div class="results" id="results"></div>
+      </div>
+    </section>
 
-          <div id="warn" class="warn" role="alert"></div>
-          <div class="results" id="results" aria-live="polite"></div>
-        </div>
-      </section>
-
-      <aside class="card">
-        <div class="hd">
-          <h2>제외 번호 선택</h2>
-          <p>눌러서 제외 / 다시 눌러서 해제</p>
-        </div>
-        <div class="bd">
-          <div class="num-grid" id="numGrid" aria-label="제외할 번호 선택"></div>
-        </div>
-      </aside>
-    </div>
+    <aside class="card">
+      <div class="hd"><strong>제외 번호</strong></div>
+      <div class="bd">
+        <div class="num-grid" id="numGrid"></div>
+      </div>
+    </aside>
   </div>
+</div>
 
-  <div class="stickyBar">
-    <div class="stickyInner">
-      <button id="btnGen" class="btn btn-main" type="button">🎲 번호 생성</button>
-    </div>
+<div class="adBar">
+  <div class="adSlot">
+    AD BANNER
+    <!-- 광고 코드 여기에 삽입 -->
   </div>
+</div>
 
-  <script>
-    const excluded = new Set();
-    const ALL = Array.from({length:45}, (_,i)=>i+1);
+<div class="stickyBar">
+  <button id="btnGen" class="btn btn-main">🎲 번호 생성</button>
+</div>
 
-    const numGrid = document.getElementById('numGrid');
-    const excludedCount = document.getElementById('excludedCount');
-    const btnClear = document.getElementById('btnClear');
-    const btnGen = document.getElementById('btnGen');
-    const results = document.getElementById('results');
-    const warn = document.getElementById('warn');
+<script>
+const excluded = new Set();
+const ALL = Array.from({length:45},(_,i)=>i+1);
+let runIndex = 0;
 
-    let runIndex = 0;
+const numGrid = document.getElementById('numGrid');
+const excludedCount = document.getElementById('excludedCount');
+const results = document.getElementById('results');
 
-    function updateExcludedUI(){
-      excludedCount.textContent = String(excluded.size);
-    }
-    function clearWarn(){
-      warn.classList.remove('show');
-      warn.textContent = '';
-    }
-    function showWarn(msg){
-      warn.textContent = msg;
-      warn.classList.add('show');
-    }
-
-    function renderGrid(){
-      numGrid.innerHTML = '';
-      for (let n=1; n<=45; n++){
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'num' + (excluded.has(n) ? ' is-off' : '');
-        b.textContent = String(n);
-        b.setAttribute('aria-pressed', excluded.has(n) ? 'true' : 'false');
-        b.addEventListener('click', ()=>{
-          if (excluded.has(n)) excluded.delete(n);
-          else excluded.add(n);
-          updateExcludedUI();
-          renderGrid();
-          clearWarn();
-        });
-        numGrid.appendChild(b);
-      }
-    }
-
-    function availablePool(){
-      return ALL.filter(n => !excluded.has(n));
-    }
-
-    function pick6(pool){
-      const arr = pool.slice();
-      for (let i = arr.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr.slice(0, 6).sort((a,b)=>a-b);
-    }
-
-    function makeResultShell(index){
-      const wrap = document.createElement('div');
-      wrap.className = 'result';
-
-      const top = document.createElement('div');
-      top.className = 'result-top';
-
-      const idx = document.createElement('div');
-      idx.className = 'idx';
-      idx.textContent = String(index);
-
-      const copy = document.createElement('button');
-      copy.type = 'button';
-      copy.className = 'copy';
-      copy.textContent = '복사';
-      copy.disabled = true;
-      copy.style.opacity = '.6';
-      copy.style.cursor = 'not-allowed';
-
-      top.appendChild(idx);
-      top.appendChild(copy);
-
-      const ballsWrap = document.createElement('div');
-      ballsWrap.className = 'balls';
-
-      const balls = [];
-      for(let i=0;i<6;i++){
-        const ball = document.createElement('div');
-        ball.className = 'ball isRolling';
-        ball.textContent = '--';
-        balls.push(ball);
-        ballsWrap.appendChild(ball);
-      }
-
-      wrap.appendChild(top);
-      wrap.appendChild(ballsWrap);
-
-      return {wrap, copy, balls};
-    }
-
-    function generate(){
-      clearWarn();
-
-      const pool = availablePool();
-      if (pool.length < 6){
-        showWarn('제외가 너무 많습니다.');
-        return;
-      }
-
-      runIndex += 1;
-
-      const finalNums = pick6(pool);
-      const {wrap, copy, balls} = makeResultShell(runIndex);
-
-      results.prepend(wrap);
-
-      balls.forEach((ball, i)=>{
-        let ticks = 0;
-        const base = 14;
-        const extra = i * 8;
-        const total = base + extra;
-
-        const timer = setInterval(()=>{
-          ball.textContent = String(Math.floor(Math.random()*45)+1);
-          ticks++;
-
-          if (ticks >= total){
-            clearInterval(timer);
-            ball.classList.remove('isRolling');
-            ball.textContent = String(finalNums[i]);
-            ball.classList.add('pop');
-            setTimeout(()=> ball.classList.remove('pop'), 220);
-
-            if (i === 5){
-              copy.disabled = false;
-              copy.style.opacity = '1';
-              copy.style.cursor = 'pointer';
-              copy.addEventListener('click', async ()=>{
-                const text = finalNums.join(' ');
-                try{
-                  await navigator.clipboard.writeText(text);
-                  copy.textContent = '복사됨';
-                  setTimeout(()=> copy.textContent='복사', 900);
-                }catch(e){
-                  copy.textContent = '복사 실패';
-                  setTimeout(()=> copy.textContent='복사', 900);
-                }
-              }, {once:true});
-            }
-          }
-        }, 60);
-      });
-    }
-
-    btnClear.addEventListener('click', ()=>{
-      excluded.clear();
-      updateExcludedUI();
+function renderGrid(){
+  numGrid.innerHTML='';
+  ALL.forEach(n=>{
+    const b=document.createElement('button');
+    b.className='num'+(excluded.has(n)?' is-off':'');
+    b.textContent=n;
+    b.onclick=()=>{
+      excluded.has(n)?excluded.delete(n):excluded.add(n);
+      excludedCount.textContent=excluded.size;
       renderGrid();
-      clearWarn();
-    });
+    };
+    numGrid.appendChild(b);
+  });
+}
 
-    btnGen.addEventListener('click', generate);
+function generate(){
+  const pool=ALL.filter(n=>!excluded.has(n));
+  if(pool.length<6)return;
+  runIndex++;
+  const nums=pool.sort(()=>Math.random()-0.5).slice(0,6);
+  const r=document.createElement('div');
+  r.className='result';
+  const balls=document.createElement('div');
+  balls.className='balls';
+  nums.forEach(n=>{
+    const b=document.createElement('div');
+    b.className='ball';
+    b.textContent=n;
+    balls.appendChild(b);
+  });
+  r.appendChild(balls);
+  results.prepend(r);
+}
 
-    renderGrid();
-    updateExcludedUI();
-  </script>
+document.getElementById('btnGen').onclick=generate;
+document.getElementById('btnClear').onclick=()=>{
+  excluded.clear();
+  excludedCount.textContent=0;
+  renderGrid();
+};
+document.getElementById('btnReset').onclick=()=>{
+  excluded.clear();
+  excludedCount.textContent=0;
+  results.innerHTML='';
+  runIndex=0;
+  renderGrid();
+};
+
+renderGrid();
+</script>
 </body>
 </html>
