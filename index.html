@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>로또 번호 생성기</title>
-  <meta name="description" content="제외 번호를 선택한 뒤 로또 번호 6개를 생성합니다." />
 
   <style>
     :root{
@@ -20,36 +19,40 @@
       --shadow: 0 18px 40px rgba(0,0,0,.35);
       --radius: 18px;
 
-      /* 기본(PC/태블릿 포함) */
+      /* 기본(PC/태블릿) */
       --h1: clamp(26px, 4.8vw, 44px);
       --h2: clamp(18px, 2.8vw, 24px);
       --p:  clamp(15px, 2.4vw, 18px);
 
       --btn: clamp(22px, 3.6vw, 30px);
 
-      --numBtn: clamp(18px, 2.8vw, 24px);
-      --numBtnH: clamp(62px, 6.4vw, 78px);
+      /* 제외 숫자 타일 */
+      --numBtn: clamp(20px, 3.0vw, 26px);
+      --numBtnH: clamp(70px, 7.2vw, 86px);
+      --numExcludedLabel: 13px;
 
-      /* 결과 공(중요) */
+      /* 결과 공 */
       --ball: clamp(74px, 8.8vw, 92px);
       --ballFont: clamp(30px, 3.6vw, 40px);
       --gap: 14px;
     }
 
-    /* 모바일에서 “확실히” 키움 (핵심) */
+    /* 모바일에서 “확실히” 크게 (핵심) */
     @media (max-width: 520px){
       :root{
         --h1: clamp(30px, 7.0vw, 40px);
-        --h2: clamp(20px, 5.0vw, 24px);
-        --p:  clamp(17px, 4.2vw, 19px);
+        --h2: clamp(22px, 5.4vw, 26px);
+        --p:  clamp(18px, 4.6vw, 20px);
 
-        --btn: clamp(24px, 6.0vw, 30px);
+        --btn: clamp(26px, 6.6vw, 34px);
 
-        --numBtn: clamp(20px, 5.0vw, 24px);
-        --numBtnH: clamp(70px, 14.0vw, 84px);
+        /* 여기서 숫자 체급을 올려버림 */
+        --numBtn: clamp(28px, 7.4vw, 34px);
+        --numBtnH: clamp(88px, 18.5vw, 112px);
+        --numExcludedLabel: 16px;
 
-        --ball: clamp(86px, 18.0vw, 106px);
-        --ballFont: clamp(34px, 8.2vw, 42px);
+        --ball: clamp(96px, 20vw, 120px);
+        --ballFont: clamp(40px, 9.6vw, 48px);
         --gap: 12px;
       }
     }
@@ -151,9 +154,9 @@
 
     .btn-ghost{
       padding: 14px 14px;
-      font-size: clamp(16px, 3.8vw, 20px);
+      font-size: clamp(18px, 4.6vw, 22px);
       background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.9);
+      color: rgba(255,255,255,.92);
       border: 1px solid rgba(255,255,255,.14);
       opacity: .95;
     }
@@ -175,28 +178,29 @@
       border-radius: 999px;
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.12);
-      font-size: clamp(16px, 3.8vw, 18px);
+      font-size: clamp(18px, 4.8vw, 20px);
       font-weight: 900;
-      color: rgba(255,255,255,.9);
+      color: rgba(255,255,255,.92);
     }
-    .pill strong{ font-size: clamp(18px, 4.4vw, 22px); }
+    .pill strong{ font-size: clamp(20px, 5.4vw, 24px); }
 
     /* 제외 숫자 */
     .num-grid{
       display:grid;
-      grid-template-columns: repeat(6, minmax(0,1fr));
-      gap: 10px;
+      grid-template-columns: repeat(5, minmax(0,1fr)); /* 모바일 기준 5열 고정(가독성) */
+      gap: 12px;
     }
-    @media (max-width: 420px){
-      .num-grid{ grid-template-columns: repeat(5, minmax(0,1fr)); }
+    @media (min-width: 680px){
+      .num-grid{ grid-template-columns: repeat(6, minmax(0,1fr)); }
     }
+
     .num{
       height: var(--numBtnH);
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.16);
       background: rgba(255,255,255,.06);
       color: var(--text);
-      font-weight: 950;
+      font-weight: 1000;
       font-size: var(--numBtn);
       cursor:pointer;
       transition: transform .06s ease, filter .12s ease, background .12s ease;
@@ -205,21 +209,24 @@
       align-items:center;
       justify-content:center;
       position:relative;
+      padding-bottom: 18px; /* 아래 '제외' 자리 */
     }
     .num:active{ transform: scale(.99); }
     .num:hover{ filter: brightness(1.06); }
+
     .num.is-off{
       background: rgba(239,68,68,.14);
-      border-color: rgba(239,68,68,.35);
+      border-color: rgba(239,68,68,.38);
       color: #ffd1d1;
     }
     .num.is-off::after{
       content:"제외";
       position:absolute;
-      bottom: 8px;
-      font-size: clamp(11px, 2.6vw, 12px);
+      bottom: 10px;
+      font-size: var(--numExcludedLabel);
       font-weight: 950;
       opacity:.95;
+      letter-spacing: .02em;
     }
 
     /* 경고 */
@@ -259,18 +266,18 @@
       margin-bottom: 12px;
     }
     .idx{
-      font-size: clamp(16px, 4.0vw, 18px);
-      font-weight: 950;
-      color: rgba(255,255,255,.92);
+      font-size: clamp(18px, 4.8vw, 20px);
+      font-weight: 1000;
+      color: rgba(255,255,255,.95);
     }
     .copy{
-      padding: 10px 12px;
+      padding: 12px 14px;
       border-radius: 14px;
       background: rgba(255,255,255,.08);
       border: 1px solid rgba(255,255,255,.14);
       color: rgba(255,255,255,.92);
-      font-weight: 950;
-      font-size: clamp(14px, 3.4vw, 15px);
+      font-weight: 1000;
+      font-size: clamp(16px, 4.0vw, 16px);
       cursor:pointer;
     }
     .copy:hover{ filter: brightness(1.07); }
@@ -285,10 +292,6 @@
       padding-bottom: 8px;
       align-items:center;
     }
-    .balls::-webkit-scrollbar{ height: 10px; }
-    .balls::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.18); border-radius: 999px; }
-    .balls::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius: 999px; }
-
     .ball{
       width: var(--ball);
       height: var(--ball);
@@ -300,7 +303,7 @@
       font-weight: 1000;
       letter-spacing: 0.01em;
       background:
-        radial-gradient(circle at 30% 28%, rgba(255,255,255,.22), rgba(255,255,255,.10) 35%, rgba(255,255,255,.08) 60%),
+        radial-gradient(circle at 30% 28%, rgba(255,255,255,.24), rgba(255,255,255,.10) 35%, rgba(255,255,255,.08) 60%),
         rgba(255,255,255,.10);
       border: 2px solid rgba(255,255,255,.22);
       box-shadow:
@@ -310,7 +313,7 @@
       user-select:none;
     }
     .ball.isRolling{
-      filter: blur(.2px);
+      filter: blur(.25px);
       opacity: .95;
     }
     .ball.pop{
@@ -319,13 +322,6 @@
     @keyframes pop{
       from{ transform: scale(.96); opacity:.85; }
       to{ transform: scale(1); opacity:1; }
-    }
-
-    .note{
-      margin-top: 10px;
-      font-size: var(--p);
-      color: rgba(255,255,255,.72);
-      line-height: 1.5;
     }
 
     /* 하단 고정 바 */
@@ -348,13 +344,6 @@
       gap: 10px;
     }
     .stickyInner .btn-main{ flex: 1; }
-
-    .footerSafe{
-      margin-top: 10px;
-      font-size: var(--p);
-      color: rgba(255,255,255,.65);
-      line-height: 1.5;
-    }
   </style>
 </head>
 
@@ -362,7 +351,7 @@
   <div class="wrap">
     <header>
       <div class="title">로또 번호 생성기</div>
-      <div class="subtitle">제외할 번호를 선택한 뒤, 아래 큰 버튼을 누르면 번호가 생성됩니다.</div>
+      <div class="subtitle">제외할 번호를 선택한 뒤, 아래 버튼을 누르시면 번호가 생성됩니다.</div>
     </header>
 
     <div class="grid">
@@ -370,7 +359,7 @@
       <section class="card">
         <div class="hd">
           <h2>생성 결과</h2>
-          <p>번호는 공 안에 표시됩니다. 생성 시 번호가 하나씩 돌아가다가 멈춥니다.</p>
+          <p>번호는 공 안에 표시됩니다.</p>
         </div>
         <div class="bd">
           <div class="row">
@@ -380,13 +369,7 @@
 
           <div id="warn" class="warn" role="alert"></div>
 
-          <div class="results" id="results" aria-live="polite">
-            <div class="note">안내: 본 도구는 무작위 생성기이며 당첨을 보장하지 않습니다.</div>
-          </div>
-
-          <div class="footerSafe">
-            모바일에서 너무 작게 보이면, 이 버전은 모바일 기준으로 크기를 더 키워 둔 상태입니다.
-          </div>
+          <div class="results" id="results" aria-live="polite"></div>
         </div>
       </section>
 
@@ -398,7 +381,6 @@
         </div>
         <div class="bd">
           <div class="num-grid" id="numGrid" aria-label="제외할 번호 선택"></div>
-          <div class="note">주의: 남은 숫자가 6개 미만이면 생성이 불가합니다.</div>
         </div>
       </aside>
     </div>
@@ -427,7 +409,6 @@
     function updateExcludedUI(){
       excludedCount.textContent = String(excluded.size);
     }
-
     function clearWarn(){
       warn.classList.remove('show');
       warn.textContent = '';
@@ -509,7 +490,7 @@
       return {wrap, copy, balls};
     }
 
-    async function generate(){
+    function generate(){
       clearWarn();
 
       const pool = availablePool();
@@ -520,22 +501,16 @@
 
       runIndex += 1;
 
-      // 첫 안내 문구 제거
-      const firstNote = results.querySelector('.note');
-      if (firstNote) firstNote.remove();
-
       const finalNums = pick6(pool);
-
       const {wrap, copy, balls} = makeResultShell(runIndex);
 
-      // 최신 결과가 위로 오게
       results.prepend(wrap);
 
-      // 슬롯처럼 1 -> 2 -> 3 -> ... 순서로 멈추게
+      // 1 -> 2 -> 3 -> ... 순서로 멈춤
       balls.forEach((ball, i)=>{
         let ticks = 0;
-        const base = 12;         // 최소 회전 횟수
-        const extra = i * 7;     // 뒤로 갈수록 더 오래
+        const base = 14;
+        const extra = i * 8;
         const total = base + extra;
 
         const timer = setInterval(()=>{
@@ -549,7 +524,6 @@
             ball.classList.add('pop');
             setTimeout(()=> ball.classList.remove('pop'), 220);
 
-            // 마지막 공까지 끝나면 복사 활성화
             if (i === 5){
               copy.disabled = false;
               copy.style.opacity = '1';
