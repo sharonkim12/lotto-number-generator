@@ -2,113 +2,284 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>로또 번호 생성기 (제외 번호 선택)</title>
   <meta name="description" content="원하지 않는 번호를 제외하고 로또 번호 6개를 무작위로 생성합니다. 생성할 때마다 결과가 누적되며, 각 결과를 개별 복사할 수 있습니다." />
 
   <style>
-    :root { --bg:#0b0f19; --card:#121a2a; --text:#e8eefc; --muted:#9fb0d0; --line:#22304d; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 22px 16px 40px; }
-    h1 { margin: 0 0 6px; font-size: 22px; }
-    .desc { color: var(--muted); font-size: 14px; }
+    :root{
+      --bg:#070b14;
+      --card:#0f1626;
+      --card2:#0b1222;
+      --text:#f2f6ff;
+      --muted:#c3d0ee;
+      --line:#2a3a61;
+      --btn:#1c2a4f;
+      --btn2:#233461;
+      --ok:#b7ffd3;
+      --danger:#ffb4b4;
+      --focus:#7aa7ff;
 
-    .top { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-    .btns { display:flex; gap:10px; }
+      /* 기본(웹/태블릿) */
+      --wrap:1100px;
+      --pad:18px;
+      --radius:18px;
+      --gap:12px;
+      --gridCols:9;
 
-    button {
-      border:1px solid var(--line);
-      background:#1a2540;
-      color:var(--text);
-      padding: 12px 14px;
-      border-radius: 12px;
+      --h1:30px;
+      --base:18px;
+      --small:16px;
+
+      --btnH:56px;
+      --btnPadY:14px;
+      --btnPadX:18px;
+
+      --cellPadY:14px;
+      --cellPadX:10px;
+
+      --ball:58px;
+      --ballFont:22px;
+    }
+
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height:1.4;
+      font-size: var(--base);
+      overflow-x:hidden; /* ✅ iOS에서 가로 잘림/스크롤 방지 */
+    }
+
+    .wrap{
+      max-width: var(--wrap);
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    .top{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      align-items:flex-start;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size: var(--h1);
+      letter-spacing:-0.3px;
+    }
+
+    .desc{
+      margin:0;
+      color: var(--muted);
+      font-size: var(--base);
+    }
+
+    .btns{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+
+    button{
+      border:2px solid var(--line);
+      background: var(--btn);
+      color: var(--text);
+      padding: var(--btnPadY) var(--btnPadX);
+      border-radius: 14px;
       cursor:pointer;
-      font-weight:700;
+      font-weight:900;
+      font-size: 18px;
+      min-height: var(--btnH);
+      white-space: nowrap;
+    }
+    button:hover{ background: var(--btn2); }
+    button:active{ transform: translateY(1px); }
+    button:focus-visible{
+      outline: 4px solid var(--focus);
+      outline-offset: 2px;
     }
 
-    .card {
-      margin-top:16px;
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:16px;
+    .card{
+      margin-top:18px;
+      background: var(--card);
+      border:2px solid var(--line);
+      border-radius: var(--radius);
+      padding: var(--pad);
+      width: 100%;
+      overflow:hidden; /* ✅ 카드 밖으로 튀는 요소 차단 */
     }
 
-    .row { display:flex; justify-content:space-between; align-items:center; }
-    .hint { font-size:12px; color:var(--muted); }
+    .row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
 
-    .grid {
-      margin-top:12px;
+    .hint{
+      font-size: var(--small);
+      color: var(--muted);
+    }
+
+    .grid{
+      margin-top:14px;
       display:grid;
-      grid-template-columns: repeat(9, 1fr);
-      gap:8px;
+      grid-template-columns: repeat(var(--gridCols), minmax(0, 1fr));
+      gap: var(--gap);
+      width: 100%;
     }
 
-    @media (max-width:720px){
-      .grid { grid-template-columns: repeat(6, 1fr); }
-    }
-
-    .n {
+    .n{
       display:flex;
       align-items:center;
       justify-content:center;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px;
+      gap:10px;
+      padding: var(--cellPadY) var(--cellPadX);
+      border:2px solid var(--line);
+      border-radius:16px;
+      background: var(--card2);
+      user-select:none;
+      min-width:0;
     }
 
-    .n input { margin-right:6px; }
+    .n input{
+      width: 22px;
+      height: 22px;
+      accent-color: #6aa8ff;
+      cursor:pointer;
+      flex: 0 0 auto;
+    }
 
-    .result {
-      margin-top:16px;
+    .n label{
+      cursor:pointer;
+      font-weight:1000;
+      font-size: 20px;
+      letter-spacing:0.2px;
+    }
+
+    .result{
+      margin-top: 16px;
       display:flex;
       flex-direction:column;
-      gap:12px;
+      gap: 14px;
     }
 
-    .result-row {
+    .result-row{
       display:flex;
       align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+      padding: 14px;
+      border:2px solid var(--line);
+      border-radius:16px;
+      background: #0e1830;
+      width:100%;
+    }
+
+    .idx{
+      min-width: 44px;
+      font-weight:1000;
+      font-size: 18px;
+      color: var(--muted);
+    }
+
+    .balls{
+      display:flex;
       gap:12px;
       flex-wrap:wrap;
-      padding:10px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:#0f1730;
+      align-items:center;
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
-    .round {
-      min-width:52px;
-      font-weight:700;
-      color:#9fb0d0;
-    }
-
-    .balls {
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .ball {
-      width:48px;
-      height:48px;
-      border-radius:999px;
+    .ball{
+      width: var(--ball);
+      height: var(--ball);
+      border-radius: 999px;
       display:flex;
       align-items:center;
       justify-content:center;
-      border:1px solid var(--line);
-      background:#121a2a;
-      font-weight:900;
+      border:2px solid var(--line);
+      background:#0b1222;
+      font-weight:1000;
+      font-size: var(--ballFont);
+      flex: 0 0 auto;
     }
 
-    .ok { color:#b7ffd3; }
-    .danger { color:#ffb4b4; }
+    .ok{ color: var(--ok); font-weight:1000; }
+    .danger{ color: var(--danger); font-weight:1000; }
 
-    .footer {
-      margin-top:14px;
-      font-size:12px;
-      color:var(--muted);
+    .footer{
+      margin-top: 16px;
+      font-size: var(--small);
+      color: var(--muted);
+    }
+
+    /* ✅ 반응형: 큰 태블릿 */
+    @media (max-width: 920px){
+      :root{
+        --gridCols:6;
+        --h1:28px;
+      }
+    }
+
+    /* ✅ 반응형: 모바일(핵심) */
+    @media (max-width: 560px){
+      :root{
+        --gridCols:5;           /* ✅ 폰에서 절대 안 잘림 */
+        --pad:14px;
+        --gap:10px;
+        --h1:22px;
+        --base:16px;
+        --small:14px;
+
+        --btnH:52px;
+        --btnPadY:12px;
+        --btnPadX:14px;
+
+        --cellPadY:12px;
+        --cellPadX:8px;
+
+        --ball:52px;
+        --ballFont:20px;
+      }
+
+      .wrap{
+        padding: 18px 12px 48px;
+      }
+
+      .btns{
+        width:100%;
+        justify-content:flex-start;
+      }
+
+      .btns button{
+        flex: 1 1 calc(50% - 6px); /* ✅ 버튼 2개씩 줄바꿈 */
+      }
+
+      /* 결과 행에서 '복사' 버튼은 아래로 내려가도 자연스럽게 */
+      .result-row button{
+        width: 100%;
+      }
+    }
+
+    /* ✅ 초소형 폰(아이폰 SE급) */
+    @media (max-width: 360px){
+      :root{
+        --gridCols:4;
+      }
+      .btns button{
+        flex: 1 1 100%;
+      }
     }
   </style>
 </head>
@@ -121,32 +292,39 @@
       <h1>로또 번호 생성기 (제외 번호 선택)</h1>
       <p class="desc">원하지 않는 번호를 제외하고 로또 번호 6개를 생성합니다. 생성 결과는 아래로 계속 누적됩니다.</p>
     </div>
+
     <div class="btns">
-      <button id="btnGen">번호 생성</button>
-      <button id="btnCopy">최근 결과 복사</button>
-      <button id="btnClear">제외 해제</button>
+      <button id="btnGen" type="button">번호 생성</button>
+      <button id="btnCopy" type="button">최근 결과 복사</button>
+      <button id="btnClear" type="button">제외 해제</button>
     </div>
   </div>
 
   <div class="card">
     <div class="row">
-      <strong>제외할 번호</strong>
+      <strong style="font-size:20px;">제외할 번호</strong>
       <span class="hint" id="countInfo">제외: 0개</span>
     </div>
 
-    <div class="grid" id="grid"></div>
+    <div style="height:10px;"></div>
+    <div class="hint">선택한 번호는 생성 결과에서 제외됩니다.</div>
 
-    <div class="row" style="margin-top:16px;">
-      <strong>결과</strong>
+    <div class="grid" id="grid" aria-label="제외 번호 선택"></div>
+
+    <div style="height:14px;"></div>
+
+    <div class="row">
+      <strong style="font-size:20px;">결과</strong>
       <span class="hint" id="status">아직 생성된 번호가 없습니다.</span>
     </div>
 
-    <div class="result" id="result"></div>
+    <div class="result" id="result" aria-live="polite"></div>
 
     <div class="footer">
       ※ 본 도구는 무작위로 번호를 생성하며, 당첨을 보장하지 않습니다.
     </div>
   </div>
+
 </div>
 
 <script>
@@ -159,86 +337,118 @@
   const btnClear = document.getElementById('btnClear');
 
   let lastNumbers = [];
-  let round = 0;
+  let idx = 0;
 
   const pad2 = n => String(n).padStart(2,'0');
 
   function renderGrid(){
     for(let i=1;i<=45;i++){
-      const d=document.createElement('div');
-      d.className='n';
-      d.innerHTML=`<input type="checkbox" data-num="${i}"><label>${pad2(i)}</label>`;
-      d.querySelector('input').addEventListener('change',updateCount);
+      const d = document.createElement('div');
+      d.className = 'n';
+
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.dataset.num = String(i);
+      cb.id = 'n' + i;
+
+      const label = document.createElement('label');
+      label.htmlFor = cb.id;
+      label.textContent = pad2(i);
+
+      cb.addEventListener('change', updateCount);
+
+      d.appendChild(cb);
+      d.appendChild(label);
       grid.appendChild(d);
     }
   }
 
   function updateCount(){
-    const c=grid.querySelectorAll('input:checked').length;
-    countInfo.textContent=`제외: ${c}개`;
+    const c = grid.querySelectorAll('input:checked').length;
+    countInfo.textContent = `제외: ${c}개`;
   }
 
   function pick6(excluded){
-    const pool=[];
+    const pool = [];
     for(let i=1;i<=45;i++) if(!excluded.has(i)) pool.push(i);
-    if(pool.length<6) return null;
+    if(pool.length < 6) return null;
+
     for(let i=pool.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [pool[i],pool[j]]=[pool[j],pool[i]];
+      const j = Math.floor(Math.random()*(i+1));
+      [pool[i],pool[j]] = [pool[j],pool[i]];
     }
     return pool.slice(0,6).sort((a,b)=>a-b);
   }
 
-  btnGen.onclick=()=>{
-    const excluded=new Set([...grid.querySelectorAll('input:checked')].map(c=>+c.dataset.num));
-    const nums=pick6(excluded);
+  async function writeClipboard(text){
+    await navigator.clipboard.writeText(text);
+  }
+
+  btnGen.onclick = () => {
+    const excluded = new Set([...grid.querySelectorAll('input:checked')].map(c => +c.dataset.num));
+    const nums = pick6(excluded);
+
     if(!nums){
-      statusEl.innerHTML='<span class="danger">제외 번호가 너무 많아 생성할 수 없습니다.</span>';
+      statusEl.innerHTML = '<span class="danger">제외 번호가 너무 많아 생성할 수 없습니다. 최소 6개 이상 남겨 주세요.</span>';
       return;
     }
 
-    round++;
-    lastNumbers=nums;
+    idx++;
+    lastNumbers = nums;
 
-    const row=document.createElement('div');
-    row.className='result-row';
+    const row = document.createElement('div');
+    row.className = 'result-row';
 
-    const r=document.createElement('div');
-    r.className='round';
-    r.textContent=`${round}회차`;
+    const left = document.createElement('div');
+    left.className = 'idx';
+    left.textContent = `${idx}.`;
 
-    const balls=document.createElement('div');
-    balls.className='balls';
-    nums.forEach(n=>{
-      const b=document.createElement('div');
-      b.className='ball';
-      b.textContent=pad2(n);
+    const balls = document.createElement('div');
+    balls.className = 'balls';
+    nums.forEach(n => {
+      const b = document.createElement('div');
+      b.className = 'ball';
+      b.textContent = pad2(n);
       balls.appendChild(b);
     });
 
-    const copy=document.createElement('button');
-    copy.textContent='복사';
-    copy.onclick=()=>navigator.clipboard.writeText(nums.map(pad2).join(' '));
+    const copyBtn = document.createElement('button');
+    copyBtn.type = 'button';
+    copyBtn.textContent = '복사';
+    copyBtn.onclick = async () => {
+      const text = nums.map(pad2).join(' ');
+      try{
+        await writeClipboard(text);
+        statusEl.innerHTML = `<span class="ok">${idx}번 결과가 복사되었습니다.</span> ${text}`;
+      }catch{
+        statusEl.innerHTML = `<span class="danger">복사에 실패했습니다. 브라우저 권한을 확인해 주세요.</span>`;
+      }
+    };
 
-    row.append(r,balls,copy);
+    row.append(left, balls, copyBtn);
     resultEl.appendChild(row);
 
-    statusEl.innerHTML=`<span class="ok">${round}회차 번호가 생성되었습니다.</span>`;
+    statusEl.innerHTML = `<span class="ok">${idx}번째 결과가 생성되었습니다.</span> (제외 ${excluded.size}개 반영)`;
   };
 
-  btnCopy.onclick=()=>{
+  btnCopy.onclick = async () => {
     if(!lastNumbers.length){
-      statusEl.innerHTML='<span class="danger">복사할 결과가 없습니다.</span>';
+      statusEl.innerHTML = '<span class="danger">복사할 최근 결과가 없습니다. 먼저 번호를 생성해 주세요.</span>';
       return;
     }
-    navigator.clipboard.writeText(lastNumbers.map(pad2).join(' '));
-    statusEl.innerHTML='<span class="ok">최근 결과가 복사되었습니다.</span>';
+    const text = lastNumbers.map(pad2).join(' ');
+    try{
+      await writeClipboard(text);
+      statusEl.innerHTML = `<span class="ok">최근 결과가 복사되었습니다.</span> ${text}`;
+    }catch{
+      statusEl.innerHTML = `<span class="danger">복사에 실패했습니다. 브라우저 권한을 확인해 주세요.</span>`;
+    }
   };
 
-  btnClear.onclick=()=>{
-    grid.querySelectorAll('input').forEach(c=>c.checked=false);
+  btnClear.onclick = () => {
+    grid.querySelectorAll('input').forEach(c => c.checked = false);
     updateCount();
-    statusEl.textContent='제외 번호 선택이 초기화되었습니다.';
+    statusEl.textContent = '제외 번호 선택이 초기화되었습니다.';
   };
 
   renderGrid();
