@@ -32,7 +32,7 @@
       --radius: 18px;
 
       /* JS가 실제 높이 측정해서 덮어씀 */
-      --fixedSpace: 200px;
+      --fixedSpace: 140px;
       --safeB: env(safe-area-inset-bottom, 0px);
     }
 
@@ -251,21 +251,21 @@
       color: #ffd1d1;
     }
 
-@media (max-width: 480px){
-  .num{
-    height: clamp(44px, 12vw, 58px);
-    font-size: clamp(18px, 5.4vw, 24px);
-  }
-  .num-grid{ gap: 7px; }
-}
+    @media (max-width: 480px){
+      .num{
+        height: clamp(44px, 12vw, 58px);
+        font-size: clamp(18px, 5.4vw, 24px);
+      }
+      .num-grid{ gap: 7px; }
+    }
 
-@media (max-width: 360px){
-  .num-grid{ grid-template-columns: repeat(5,1fr); }
-  .num{
-    height: clamp(42px, 13vw, 54px);
-    font-size: clamp(18px, 5.6vw, 24px);
-  }
-}
+    @media (max-width: 360px){
+      .num-grid{ grid-template-columns: repeat(5,1fr); }
+      .num{
+        height: clamp(42px, 13vw, 54px);
+        font-size: clamp(18px, 5.6vw, 24px);
+      }
+    }
 
     @media (min-width: 700px){
       .num-grid{
@@ -287,38 +287,7 @@
       .num{ height: 74px; font-size: 26px; }
     }
 
-    /* ===== 하단 광고 + 생성 버튼 ===== */
-    .adBar{
-      position: fixed;
-      left:0; right:0;
-      bottom: calc(84px + var(--safeB));
-      padding: 10px 12px;
-      background: rgba(7,16,24,.90);
-      backdrop-filter: blur(6px);
-      border-top: 1px solid rgba(255,255,255,.10);
-      z-index: 49;
-      pointer-events: auto;
-    }
-    .adInner{
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 12px;
-    }
-    .adSlot{
-      width:100%;
-      height: 64px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color: rgba(255,255,255,.40);
-      font-weight: 900;
-      font-size: 13px;
-      overflow:hidden;
-    }
-
+    /* ===== 하단 생성 버튼 바(광고 없음) ===== */
     .stickyBar{
       position: fixed;
       left:0; right:0; bottom:0;
@@ -348,63 +317,63 @@
       touch-action: manipulation;
     }
     .btn-main:active{ transform: scale(.995); }
-/* =========================
-   모바일에서만 글씨 크게
-   ========================= */
-@media (max-width: 520px){
 
-  /* 상단 제목/설명 */
-  .title{
-    font-size: clamp(30px, 8.5vw, 42px);
-    line-height: 1.08;
-  }
-  .subtitle{
-    font-size: clamp(15px, 4.2vw, 18px);
-    line-height: 1.35;
-  }
+    /* =========================
+       모바일에서만 글씨 크게
+       ========================= */
+    @media (max-width: 520px){
 
-  /* 카드 헤더 제목/설명 */
-  .hd h2{
-    font-size: clamp(18px, 4.8vw, 22px);
-  }
-  .hd p{
-    font-size: clamp(13px, 3.8vw, 16px);
-  }
+      /* 상단 제목/설명 */
+      .title{
+        font-size: clamp(30px, 8.5vw, 42px);
+        line-height: 1.08;
+      }
+      .subtitle{
+        font-size: clamp(15px, 4.2vw, 18px);
+        line-height: 1.35;
+      }
 
-  /* 상단 pill + 버튼들 */
-  .pill{
-    font-size: clamp(14px, 3.9vw, 16px);
-  }
-  .pill strong{
-    font-size: clamp(18px, 5.2vw, 22px);
-  }
-  .btn-ghost, .btn-danger{
-    font-size: clamp(14px, 4.0vw, 16px);
-    padding: 14px 12px;
-  }
+      /* 카드 헤더 제목/설명 */
+      .hd h2{
+        font-size: clamp(18px, 4.8vw, 22px);
+      }
+      .hd p{
+        font-size: clamp(13px, 3.8vw, 16px);
+      }
 
-  /* 생성 버튼 */
-  .btn-main{
-    font-size: clamp(22px, 6.2vw, 32px);
-    padding: 20px 16px;
-  }
+      /* 상단 pill + 버튼들 */
+      .pill{
+        font-size: clamp(14px, 3.9vw, 16px);
+      }
+      .pill strong{
+        font-size: clamp(18px, 5.2vw, 22px);
+      }
+      .btn-ghost, .btn-danger{
+        font-size: clamp(14px, 4.0vw, 16px);
+        padding: 14px 12px;
+      }
 
-  /* 결과 줄(번호) 글씨 */
-  .numsLine{
-    font-size: clamp(22px, 6.4vw, 34px);
-    padding: 14px 12px;
-  }
+      /* 생성 버튼 */
+      .btn-main{
+        font-size: clamp(22px, 6.2vw, 32px);
+        padding: 20px 16px;
+      }
 
-  /* 결과 인덱스/복사 버튼 */
-  .idx{
-    font-size: clamp(14px, 4.2vw, 16px);
-  }
-  .copy{
-    font-size: clamp(13px, 3.8vw, 15px);
-    padding: 12px 14px;
-  }
-}
+      /* 결과 줄(번호) 글씨 */
+      .numsLine{
+        font-size: clamp(22px, 6.4vw, 34px);
+        padding: 14px 12px;
+      }
 
+      /* 결과 인덱스/복사 버튼 */
+      .idx{
+        font-size: clamp(14px, 4.2vw, 16px);
+      }
+      .copy{
+        font-size: clamp(13px, 3.8vw, 15px);
+        padding: 12px 14px;
+      }
+    }
   </style>
 </head>
 
@@ -448,14 +417,6 @@
     </div>
   </div>
 
-  <div class="adBar" id="adBar">
-    <div class="adInner">
-      <div id="adSlot" class="adSlot">
-        AD BANNER
-      </div>
-    </div>
-  </div>
-
   <div class="stickyBar" id="stickyBar">
     <div class="stickyInner">
       <button id="btnGen" class="btn-main" type="button">🎲 번호 생성</button>
@@ -473,17 +434,15 @@
     const btnGen = document.getElementById('btnGen');
     const results = document.getElementById('results');
 
-    const adBar = document.getElementById('adBar');
     const stickyBar = document.getElementById('stickyBar');
 
     let runIndex = 0;
 
     function updateFixedSpace(){
-      // 실제 하단 고정영역 높이(광고 + 버튼바) 측정해서 본문 padding에 반영
-      const adH = adBar ? adBar.offsetHeight : 0;
+      // 하단 고정영역(버튼바) 높이만 측정해서 본문 padding에 반영
       const stickyH = stickyBar ? stickyBar.offsetHeight : 0;
       const extra = 12; // 여유
-      const total = adH + stickyH + extra;
+      const total = stickyH + extra;
       document.documentElement.style.setProperty('--fixedSpace', total + 'px');
     }
 
@@ -628,8 +587,5 @@
     updateExcludedUI();
     updateFixedSpace();
   </script>
-
-  <!-- 광고 스크립트는 여기(또는 adSlot 안)에 붙이면 됨 -->
-  <!-- AD_SCRIPT_HERE -->
 </body>
 </html>
