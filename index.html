@@ -251,21 +251,21 @@
       color: #ffd1d1;
     }
 
-    @media (max-width: 480px){
-      .num{
-        height: clamp(44px, 12vw, 58px);
-        font-size: clamp(16px, 4.6vw, 22px);
-      }
-      .num-grid{ gap: 7px; }
-    }
+@media (max-width: 480px){
+  .num{
+    height: clamp(44px, 12vw, 58px);
+    font-size: clamp(18px, 5.4vw, 24px);
+  }
+  .num-grid{ gap: 7px; }
+}
 
-    @media (max-width: 360px){
-      .num-grid{ grid-template-columns: repeat(5,1fr); }
-      .num{
-        height: clamp(42px, 13vw, 54px);
-        font-size: clamp(15px, 5vw, 21px);
-      }
-    }
+@media (max-width: 360px){
+  .num-grid{ grid-template-columns: repeat(5,1fr); }
+  .num{
+    height: clamp(42px, 13vw, 54px);
+    font-size: clamp(18px, 5.6vw, 24px);
+  }
+}
 
     @media (min-width: 700px){
       .num-grid{
@@ -348,6 +348,63 @@
       touch-action: manipulation;
     }
     .btn-main:active{ transform: scale(.995); }
+/* =========================
+   모바일에서만 글씨 크게
+   ========================= */
+@media (max-width: 520px){
+
+  /* 상단 제목/설명 */
+  .title{
+    font-size: clamp(30px, 8.5vw, 42px);
+    line-height: 1.08;
+  }
+  .subtitle{
+    font-size: clamp(15px, 4.2vw, 18px);
+    line-height: 1.35;
+  }
+
+  /* 카드 헤더 제목/설명 */
+  .hd h2{
+    font-size: clamp(18px, 4.8vw, 22px);
+  }
+  .hd p{
+    font-size: clamp(13px, 3.8vw, 16px);
+  }
+
+  /* 상단 pill + 버튼들 */
+  .pill{
+    font-size: clamp(14px, 3.9vw, 16px);
+  }
+  .pill strong{
+    font-size: clamp(18px, 5.2vw, 22px);
+  }
+  .btn-ghost, .btn-danger{
+    font-size: clamp(14px, 4.0vw, 16px);
+    padding: 14px 12px;
+  }
+
+  /* 생성 버튼 */
+  .btn-main{
+    font-size: clamp(22px, 6.2vw, 32px);
+    padding: 20px 16px;
+  }
+
+  /* 결과 줄(번호) 글씨 */
+  .numsLine{
+    font-size: clamp(22px, 6.4vw, 34px);
+    padding: 14px 12px;
+  }
+
+  /* 결과 인덱스/복사 버튼 */
+  .idx{
+    font-size: clamp(14px, 4.2vw, 16px);
+  }
+  .copy{
+    font-size: clamp(13px, 3.8vw, 15px);
+    padding: 12px 14px;
+  }
+}
+
   </style>
 </head>
 
