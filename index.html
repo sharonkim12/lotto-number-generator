@@ -31,8 +31,9 @@
       --shadow: 0 18px 40px rgba(0,0,0,.35);
       --radius: 18px;
 
-      /* 하단 고정 영역 예상 높이(광고+버튼) */
-      --fixedSpace: 176px;
+      /* JS가 실제 높이 측정해서 덮어씀 */
+      --fixedSpace: 200px;
+      --safeB: env(safe-area-inset-bottom, 0px);
     }
 
     *{ box-sizing:border-box; }
@@ -48,9 +49,9 @@
     }
 
     .wrap{
-      max-width: 980px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 12px 12px calc(var(--fixedSpace) + 18px);
+      padding: 12px 12px calc(var(--fixedSpace) + 18px + var(--safeB));
     }
 
     header{ margin: 6px 0 10px; }
@@ -73,7 +74,7 @@
       gap: 10px;
     }
     @media (min-width: 920px){
-      .grid{ grid-template-columns: 1.1fr .9fr; gap: 14px; }
+      .grid{ grid-template-columns: 1fr 1fr; gap: 14px; }
     }
 
     .card{
@@ -103,6 +104,14 @@
     }
 
     .bd{ padding: 12px; }
+
+    /* 모바일에서 "제외 번호" 카드만 내부 스크롤 */
+    @media (max-width: 520px){
+      .grid > aside.card .bd{
+        max-height: 52vh;
+        overflow: auto;
+      }
+    }
 
     .row{
       display:flex;
@@ -136,6 +145,7 @@
       letter-spacing:-0.01em;
       user-select:none;
       transition: transform .06s ease, opacity .12s ease;
+      touch-action: manipulation;
     }
     .btn:active{ transform: scale(.995); }
 
@@ -190,6 +200,7 @@
       font-size: clamp(12px, 3.0vw, 13px);
       cursor:pointer;
       white-space: nowrap;
+      touch-action: manipulation;
     }
 
     .numsLine{
@@ -202,20 +213,21 @@
       font-size: clamp(18px, 5.2vw, 28px);
       letter-spacing: .02em;
 
-      white-space: nowrap;      /* 한 줄 고정 */
-      overflow-x: auto;         /* 넘치면 가로 스크롤 */
+      white-space: nowrap;
+      overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
     .numsLine::-webkit-scrollbar{ display:none; }
     .numsLine.isRolling{ opacity:.92; filter: blur(.25px); }
 
-    /* ===== 제외 번호: 9:16 보기 좋게 (모바일 6열 기본) ===== */
+    /* ===== 제외 번호 ===== */
     .num-grid{
       display:grid;
-      grid-template-columns: repeat(6, 1fr); /* 모바일에서 숫자 크게 */
+      grid-template-columns: repeat(6, 1fr);
       gap: 8px;
     }
+
     .num{
       height: 54px;
       border-radius: 16px;
@@ -230,38 +242,65 @@
       display:flex;
       align-items:center;
       justify-content:center;
+      touch-action: manipulation;
     }
+
     .num.is-off{
       background: rgba(239,68,68,.18);
       border-color: rgba(239,68,68,.45);
       color: #ffd1d1;
     }
 
-    /* 작은 폰(폭 좁으면 5열) */
-    @media (max-width: 360px){
-      .num-grid{ grid-template-columns: repeat(5,1fr); }
-      .num{ height: 52px; font-size: 19px; }
+    @media (max-width: 480px){
+      .num{
+        height: clamp(44px, 12vw, 58px);
+        font-size: clamp(16px, 4.6vw, 22px);
+      }
+      .num-grid{ gap: 7px; }
     }
 
-    /* 태블릿/PC */
-    @media (min-width: 520px){
-      .num-grid{ grid-template-columns: repeat(9, 1fr); gap: 10px; }
-      .num{ height: 70px; font-size: 24px; border-radius: 20px; }
+    @media (max-width: 360px){
+      .num-grid{ grid-template-columns: repeat(5,1fr); }
+      .num{
+        height: clamp(42px, 13vw, 54px);
+        font-size: clamp(15px, 5vw, 21px);
+      }
+    }
+
+    @media (min-width: 700px){
+      .num-grid{
+        grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+        gap: 10px;
+      }
+      .num{
+        height: 68px;
+        font-size: 24px;
+        border-radius: 20px;
+      }
+    }
+
+    @media (min-width: 1100px){
+      .num-grid{
+        grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+        gap: 12px;
+      }
+      .num{ height: 74px; font-size: 26px; }
     }
 
     /* ===== 하단 광고 + 생성 버튼 ===== */
     .adBar{
       position: fixed;
       left:0; right:0;
-      bottom: 84px;
+      bottom: calc(84px + var(--safeB));
       padding: 10px 12px;
       background: rgba(7,16,24,.90);
       backdrop-filter: blur(6px);
       border-top: 1px solid rgba(255,255,255,.10);
       z-index: 49;
+      pointer-events: auto;
     }
     .adInner{
-      max-width: 980px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 12px;
     }
@@ -283,14 +322,15 @@
     .stickyBar{
       position: fixed;
       left:0; right:0; bottom:0;
-      padding: 12px;
+      padding: 12px 12px calc(12px + var(--safeB));
       background: rgba(7,16,24,.96);
       backdrop-filter: blur(6px);
       border-top: 1px solid rgba(255,255,255,.10);
       z-index: 50;
+      pointer-events: auto;
     }
     .stickyInner{
-      max-width: 980px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 12px;
     }
@@ -305,9 +345,9 @@
       font-weight: 1000;
       cursor:pointer;
       box-shadow: 0 14px 28px rgba(34,197,94,.22);
+      touch-action: manipulation;
     }
     .btn-main:active{ transform: scale(.995); }
-
   </style>
 </head>
 
@@ -359,7 +399,7 @@
     </div>
   </div>
 
-  <div class="stickyBar">
+  <div class="stickyBar" id="stickyBar">
     <div class="stickyInner">
       <button id="btnGen" class="btn-main" type="button">🎲 번호 생성</button>
     </div>
@@ -376,7 +416,29 @@
     const btnGen = document.getElementById('btnGen');
     const results = document.getElementById('results');
 
+    const adBar = document.getElementById('adBar');
+    const stickyBar = document.getElementById('stickyBar');
+
     let runIndex = 0;
+
+    function updateFixedSpace(){
+      // 실제 하단 고정영역 높이(광고 + 버튼바) 측정해서 본문 padding에 반영
+      const adH = adBar ? adBar.offsetHeight : 0;
+      const stickyH = stickyBar ? stickyBar.offsetHeight : 0;
+      const extra = 12; // 여유
+      const total = adH + stickyH + extra;
+      document.documentElement.style.setProperty('--fixedSpace', total + 'px');
+    }
+
+    // resize / orientation / 폰 주소창 변화 대응
+    window.addEventListener('resize', updateFixedSpace, {passive:true});
+    window.addEventListener('orientationchange', updateFixedSpace, {passive:true});
+    // 처음 렌더 후 한번, 다음 프레임에 한번 더(폰에서 offsetHeight 안정화)
+    window.addEventListener('load', ()=>{
+      updateFixedSpace();
+      requestAnimationFrame(updateFixedSpace);
+      setTimeout(updateFixedSpace, 200);
+    });
 
     function updateExcludedUI(){
       excludedCount.textContent = String(excluded.size);
@@ -454,7 +516,6 @@
       const {wrap, copy, line} = makeResultShell(runIndex);
       results.prepend(wrap);
 
-      // “뽑는 느낌” 텍스트 애니메이션
       let ticks = 0;
       const total = 22;
       const timer = setInterval(()=>{
@@ -508,6 +569,7 @@
 
     renderGrid();
     updateExcludedUI();
+    updateFixedSpace();
   </script>
 
   <!-- 광고 스크립트는 여기(또는 adSlot 안)에 붙이면 됨 -->
