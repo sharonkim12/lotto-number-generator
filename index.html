@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>로또 번호 생성기 (제외 번호 선택)</title>
-  <meta name="description" content="원하지 않는 번호를 제외하고 로또 번호 6개를 랜덤으로 생성합니다. 제외 번호 체크 후 버튼 한 번으로 생성/복사까지." />
+  <meta name="description" content="원하지 않는 번호를 제외하고 로또 번호 6개를 무작위로 생성합니다. 제외 번호 체크 후 버튼 한 번으로 생성 및 복사가 가능합니다." />
   <style>
     :root { --bg:#0b0f19; --card:#121a2a; --text:#e8eefc; --muted:#9fb0d0; --line:#22304d; }
     * { box-sizing: border-box; }
@@ -67,7 +67,7 @@
     <div class="top">
       <div>
         <h1>로또 번호 생성기 (제외 번호 선택)</h1>
-        <p class="desc">원하지 않는 번호를 체크하면, 그 번호를 빼고 6개를 랜덤으로 뽑아줘. 결과는 바로 복사 가능.</p>
+        <p class="desc">원하지 않는 번호를 선택하면 해당 번호를 제외하고 6개 번호를 무작위로 생성합니다. 결과는 즉시 복사할 수 있습니다.</p>
       </div>
       <div class="btns">
         <button id="btnGen" type="button">번호 생성</button>
@@ -80,7 +80,7 @@
       <div class="row">
         <div>
           <strong>제외할 번호</strong>
-          <div class="hint">체크된 번호는 생성에서 제외됨</div>
+          <div class="hint">선택한 번호는 생성 결과에서 제외됩니다.</div>
         </div>
         <div class="hint" id="countInfo">제외: 0개</div>
       </div>
@@ -92,14 +92,14 @@
       <div class="row">
         <div>
           <strong>결과</strong>
-          <div class="hint" id="status">아직 생성 안 함</div>
+          <div class="hint" id="status">아직 생성된 번호가 없습니다.</div>
         </div>
       </div>
 
       <div class="result" id="result"></div>
 
       <div class="footer">
-        ※ 이 도구는 무작위로 번호를 생성할 뿐, 당첨을 보장하지 않아.
+        ※ 본 도구는 무작위로 번호를 생성하며, 당첨을 보장하지 않습니다.
       </div>
     </div>
   </div>
@@ -162,13 +162,11 @@
     }
     if (pool.length < 6) return null;
 
-    // Fisher–Yates shuffle (부분만 뽑아도 되지만 간단하게)
     for (let i = pool.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [pool[i], pool[j]] = [pool[j], pool[i]];
     }
-    const picked = pool.slice(0,6).sort((a,b)=>a-b);
-    return picked;
+    return pool.slice(0,6).sort((a,b)=>a-b);
   }
 
   function renderResult(nums) {
@@ -188,33 +186,33 @@
     if (!picked) {
       lastNumbers = [];
       resultEl.innerHTML = '';
-      statusEl.innerHTML = `<span class="danger">제외가 너무 많아. 최소 6개는 남겨야 함.</span>`;
+      statusEl.innerHTML = `<span class="danger">제외 번호가 너무 많아 번호를 생성할 수 없습니다. 최소 6개 이상 남겨 주세요.</span>`;
       return;
     }
 
     lastNumbers = picked;
     renderResult(picked);
-    statusEl.innerHTML = `<span class="ok">생성 완료</span> (제외 ${excluded.size}개 반영)`;
+    statusEl.innerHTML = `<span class="ok">번호가 생성되었습니다.</span> (제외 ${excluded.size}개 반영)`;
   });
 
   btnCopy.addEventListener('click', async () => {
     if (!lastNumbers.length) {
-      statusEl.innerHTML = `<span class="danger">복사할 결과가 없음. 먼저 생성해.</span>`;
+      statusEl.innerHTML = `<span class="danger">복사할 번호가 없습니다. 먼저 번호를 생성해 주세요.</span>`;
       return;
     }
+
     const text = lastNumbers.map(pad2).join(' ');
     try {
       await navigator.clipboard.writeText(text);
-      statusEl.innerHTML = `<span class="ok">복사됨:</span> ${text}`;
+      statusEl.innerHTML = `<span class="ok">번호가 클립보드에 복사되었습니다.</span> ${text}`;
     } catch {
-      // fallback
       const ta = document.createElement('textarea');
       ta.value = text;
       document.body.appendChild(ta);
       ta.select();
       document.execCommand('copy');
       ta.remove();
-      statusEl.innerHTML = `<span class="ok">복사됨:</span> ${text}`;
+      statusEl.innerHTML = `<span class="ok">번호가 클립보드에 복사되었습니다.</span> ${text}`;
     }
   });
 
@@ -223,7 +221,7 @@
     updateCount();
     lastNumbers = [];
     resultEl.innerHTML = '';
-    statusEl.textContent = '제외 해제됨. 이제 번호 생성 누르면 됨';
+    statusEl.textContent = '선택된 제외 번호가 해제되었습니다. 번호를 생성해 주세요.';
   });
 
   renderGrid();
