@@ -4,29 +4,54 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>로또 번호 생성기</title>
-  <meta name="description" content="제외할 번호를 선택한 뒤 로또 번호 6개를 생성합니다." />
+  <meta name="description" content="제외 번호를 선택한 뒤 로또 번호 6개를 생성합니다." />
 
   <style>
     :root{
       --bg:#071018;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(0,0,0,.18);
-      --line:rgba(255,255,255,.14);
+      --cardA: rgba(255,255,255,.08);
+      --cardB: rgba(255,255,255,.04);
+      --line: rgba(255,255,255,.14);
       --text:#f3f4f6;
-      --muted:rgba(255,255,255,.7);
+      --muted:rgba(255,255,255,.72);
       --accent:#22c55e;
       --accent2:#16a34a;
       --danger:#ef4444;
       --shadow: 0 18px 40px rgba(0,0,0,.35);
       --radius: 18px;
 
-      /* 글씨 크게 */
-      --h1: clamp(24px, 5.4vw, 40px);
-      --h2: clamp(18px, 4.2vw, 24px);
-      --p:  clamp(15px, 3.6vw, 18px);
-      --btn: clamp(20px, 5.0vw, 30px);
-      --num: clamp(18px, 4.6vw, 24px);
-      --resultNum: clamp(20px, 5.2vw, 28px);
+      /* 기본(PC/태블릿 포함) */
+      --h1: clamp(26px, 4.8vw, 44px);
+      --h2: clamp(18px, 2.8vw, 24px);
+      --p:  clamp(15px, 2.4vw, 18px);
+
+      --btn: clamp(22px, 3.6vw, 30px);
+
+      --numBtn: clamp(18px, 2.8vw, 24px);
+      --numBtnH: clamp(62px, 6.4vw, 78px);
+
+      /* 결과 공(중요) */
+      --ball: clamp(74px, 8.8vw, 92px);
+      --ballFont: clamp(30px, 3.6vw, 40px);
+      --gap: 14px;
+    }
+
+    /* 모바일에서 “확실히” 키움 (핵심) */
+    @media (max-width: 520px){
+      :root{
+        --h1: clamp(30px, 7.0vw, 40px);
+        --h2: clamp(20px, 5.0vw, 24px);
+        --p:  clamp(17px, 4.2vw, 19px);
+
+        --btn: clamp(24px, 6.0vw, 30px);
+
+        --numBtn: clamp(20px, 5.0vw, 24px);
+        --numBtnH: clamp(70px, 14.0vw, 84px);
+
+        --ball: clamp(86px, 18.0vw, 106px);
+        --ballFont: clamp(34px, 8.2vw, 42px);
+        --gap: 12px;
+      }
     }
 
     *{ box-sizing:border-box; }
@@ -45,7 +70,7 @@
       max-width: 980px;
       margin: 0 auto;
       padding: clamp(14px, 3vw, 28px);
-      padding-bottom: 120px; /* 하단 버튼/결과 여백 */
+      padding-bottom: 120px;
     }
 
     header{
@@ -76,7 +101,7 @@
     }
 
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      background: linear-gradient(180deg, var(--cardA), var(--cardB));
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
@@ -101,7 +126,7 @@
     }
     .bd{ padding: 16px; }
 
-    /* 버튼: 큼직 */
+    /* 버튼 */
     .btn{
       width:100%;
       border:0;
@@ -150,13 +175,13 @@
       border-radius: 999px;
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.12);
-      font-size: clamp(15px, 3.6vw, 18px);
+      font-size: clamp(16px, 3.8vw, 18px);
       font-weight: 900;
       color: rgba(255,255,255,.9);
     }
-    .pill strong{ font-size: clamp(18px, 4.2vw, 22px); }
+    .pill strong{ font-size: clamp(18px, 4.4vw, 22px); }
 
-    /* 제외 숫자 그리드: 크게 */
+    /* 제외 숫자 */
     .num-grid{
       display:grid;
       grid-template-columns: repeat(6, minmax(0,1fr));
@@ -166,13 +191,13 @@
       .num-grid{ grid-template-columns: repeat(5, minmax(0,1fr)); }
     }
     .num{
-      height: clamp(58px, 11vw, 78px);
+      height: var(--numBtnH);
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
       color: var(--text);
       font-weight: 950;
-      font-size: var(--num);
+      font-size: var(--numBtn);
       cursor:pointer;
       transition: transform .06s ease, filter .12s ease, background .12s ease;
       line-height: 1;
@@ -192,7 +217,7 @@
       content:"제외";
       position:absolute;
       bottom: 8px;
-      font-size: clamp(11px, 2.4vw, 12px);
+      font-size: clamp(11px, 2.6vw, 12px);
       font-weight: 950;
       opacity:.95;
     }
@@ -212,7 +237,7 @@
     }
     .warn.show{ display:block; }
 
-    /* 결과: 한 줄로 길게, 줄바꿈 금지 */
+    /* 결과 */
     .results{
       display:flex;
       flex-direction:column;
@@ -231,10 +256,10 @@
       align-items:center;
       justify-content:space-between;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .idx{
-      font-size: clamp(16px, 3.8vw, 18px);
+      font-size: clamp(16px, 4.0vw, 18px);
       font-weight: 950;
       color: rgba(255,255,255,.92);
     }
@@ -245,44 +270,55 @@
       border: 1px solid rgba(255,255,255,.14);
       color: rgba(255,255,255,.92);
       font-weight: 950;
-      font-size: clamp(14px, 3.2vw, 15px);
+      font-size: clamp(14px, 3.4vw, 15px);
       cursor:pointer;
     }
     .copy:hover{ filter: brightness(1.07); }
 
-    .line{
-      display:block;
-      white-space: nowrap;     /* 줄바꿈 금지 */
-      overflow-x: auto;        /* 길면 가로 스크롤 */
+    /* 공(번호가 뙇뙇) */
+    .balls{
+      display:flex;
+      gap: var(--gap);
+      flex-wrap: nowrap;
+      overflow-x: auto;
       -webkit-overflow-scrolling: touch;
-      padding-bottom: 6px;
-      font-size: var(--resultNum);
-      font-weight: 950;
-      letter-spacing: 0.01em;
+      padding-bottom: 8px;
+      align-items:center;
     }
-    .line::-webkit-scrollbar{ height: 8px; }
-    .line::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.18); border-radius: 999px; }
-    .line::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius: 999px; }
+    .balls::-webkit-scrollbar{ height: 10px; }
+    .balls::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.18); border-radius: 999px; }
+    .balls::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); border-radius: 999px; }
 
-    /* 뽑기 애니메이션 느낌: 롤링 텍스트 */
-    .rolling{
-      opacity:.95;
-      filter: blur(.0px);
-    }
-    .rolling .digit{
-      display:inline-block;
-      min-width: 2.2ch;
-      text-align:center;
-      padding: 10px 12px;
-      margin-right: 10px;
+    .ball{
+      width: var(--ball);
+      height: var(--ball);
       border-radius: 999px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
-      animation: pop .25s ease both;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: var(--ballFont);
+      font-weight: 1000;
+      letter-spacing: 0.01em;
+      background:
+        radial-gradient(circle at 30% 28%, rgba(255,255,255,.22), rgba(255,255,255,.10) 35%, rgba(255,255,255,.08) 60%),
+        rgba(255,255,255,.10);
+      border: 2px solid rgba(255,255,255,.22);
+      box-shadow:
+        inset 0 10px 18px rgba(255,255,255,.06),
+        0 10px 22px rgba(0,0,0,.26);
+      transform: translateZ(0);
+      user-select:none;
+    }
+    .ball.isRolling{
+      filter: blur(.2px);
+      opacity: .95;
+    }
+    .ball.pop{
+      animation: pop .18s ease-out both;
     }
     @keyframes pop{
-      from{ transform: translateY(2px); opacity:.75; }
-      to{ transform: translateY(0); opacity:1; }
+      from{ transform: scale(.96); opacity:.85; }
+      to{ transform: scale(1); opacity:1; }
     }
 
     .note{
@@ -292,7 +328,7 @@
       line-height: 1.5;
     }
 
-    /* 모바일에서 메인 버튼 고정 (원하면 유지하세요) */
+    /* 하단 고정 바 */
     .stickyBar{
       position: fixed;
       left: 0;
@@ -308,6 +344,16 @@
       max-width: 980px;
       margin: 0 auto;
       padding: 0 clamp(14px, 3vw, 28px);
+      display:flex;
+      gap: 10px;
+    }
+    .stickyInner .btn-main{ flex: 1; }
+
+    .footerSafe{
+      margin-top: 10px;
+      font-size: var(--p);
+      color: rgba(255,255,255,.65);
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -316,7 +362,7 @@
   <div class="wrap">
     <header>
       <div class="title">로또 번호 생성기</div>
-      <div class="subtitle">제외할 번호를 선택한 뒤, 아래 큰 버튼을 누르면 바로 생성됩니다.</div>
+      <div class="subtitle">제외할 번호를 선택한 뒤, 아래 큰 버튼을 누르면 번호가 생성됩니다.</div>
     </header>
 
     <div class="grid">
@@ -324,7 +370,7 @@
       <section class="card">
         <div class="hd">
           <h2>생성 결과</h2>
-          <p>결과는 한 줄로 길게 표시됩니다. (길면 좌우로 스크롤됩니다.)</p>
+          <p>번호는 공 안에 표시됩니다. 생성 시 번호가 하나씩 돌아가다가 멈춥니다.</p>
         </div>
         <div class="bd">
           <div class="row">
@@ -337,6 +383,10 @@
           <div class="results" id="results" aria-live="polite">
             <div class="note">안내: 본 도구는 무작위 생성기이며 당첨을 보장하지 않습니다.</div>
           </div>
+
+          <div class="footerSafe">
+            모바일에서 너무 작게 보이면, 이 버전은 모바일 기준으로 크기를 더 키워 둔 상태입니다.
+          </div>
         </div>
       </section>
 
@@ -348,7 +398,7 @@
         </div>
         <div class="bd">
           <div class="num-grid" id="numGrid" aria-label="제외할 번호 선택"></div>
-          <div class="note">주의: 제외가 너무 많으면(남은 숫자 6개 미만) 생성이 불가합니다.</div>
+          <div class="note">주의: 남은 숫자가 6개 미만이면 생성이 불가합니다.</div>
         </div>
       </aside>
     </div>
@@ -371,6 +421,8 @@
     const btnGen = document.getElementById('btnGen');
     const results = document.getElementById('results');
     const warn = document.getElementById('warn');
+
+    let runIndex = 0;
 
     function updateExcludedUI(){
       excludedCount.textContent = String(excluded.size);
@@ -417,48 +469,7 @@
       return arr.slice(0, 6).sort((a,b)=>a-b);
     }
 
-    function makeResultCard(index, nums){
-      const wrap = document.createElement('div');
-      wrap.className = 'result';
-
-      const top = document.createElement('div');
-      top.className = 'result-top';
-
-      const idx = document.createElement('div');
-      idx.className = 'idx';
-      idx.textContent = String(index);
-
-      const copy = document.createElement('button');
-      copy.type = 'button';
-      copy.className = 'copy';
-      copy.textContent = '복사';
-      copy.addEventListener('click', async ()=>{
-        const text = nums.join(' ');
-        try{
-          await navigator.clipboard.writeText(text);
-          copy.textContent = '복사됨';
-          setTimeout(()=> copy.textContent='복사', 900);
-        }catch(e){
-          copy.textContent = '복사 실패';
-          setTimeout(()=> copy.textContent='복사', 900);
-        }
-      });
-
-      top.appendChild(idx);
-      top.appendChild(copy);
-
-      const line = document.createElement('div');
-      line.className = 'line';
-      line.textContent = nums.join('   '); // 한 줄로 길게
-
-      wrap.appendChild(top);
-      wrap.appendChild(line);
-
-      return wrap;
-    }
-
-    // “뽑는 듯한” 롤링 애니메이션: 숫자가 잠깐 빠르게 바뀌다가 확정
-    function makeRollingCard(index){
+    function makeResultShell(index){
       const wrap = document.createElement('div');
       wrap.className = 'result';
 
@@ -480,22 +491,22 @@
       top.appendChild(idx);
       top.appendChild(copy);
 
-      const line = document.createElement('div');
-      line.className = 'line rolling';
-      // 초기 6개 슬롯
-      line.innerHTML = `
-        <span class="digit">--</span>
-        <span class="digit">--</span>
-        <span class="digit">--</span>
-        <span class="digit">--</span>
-        <span class="digit">--</span>
-        <span class="digit">--</span>
-      `;
+      const ballsWrap = document.createElement('div');
+      ballsWrap.className = 'balls';
+
+      const balls = [];
+      for(let i=0;i<6;i++){
+        const ball = document.createElement('div');
+        ball.className = 'ball isRolling';
+        ball.textContent = '--';
+        balls.push(ball);
+        ballsWrap.appendChild(ball);
+      }
 
       wrap.appendChild(top);
-      wrap.appendChild(line);
+      wrap.appendChild(ballsWrap);
 
-      return {wrap, line, copy};
+      return {wrap, copy, balls};
     }
 
     async function generate(){
@@ -507,50 +518,57 @@
         return;
       }
 
-      // 결과 영역 비우기
-      results.innerHTML = '';
+      runIndex += 1;
 
-      // “한 번 생성 = 1세트”로 단순화
-      const {wrap, line, copy} = makeRollingCard(1);
-      results.appendChild(wrap);
+      // 첫 안내 문구 제거
+      const firstNote = results.querySelector('.note');
+      if (firstNote) firstNote.remove();
 
-      // 롤링: 900ms 동안 60ms 간격으로 숫자 변경
-      const digits = Array.from(line.querySelectorAll('.digit'));
-      const start = performance.now();
-      const duration = 900;
-      const interval = 60;
+      const finalNums = pick6(pool);
 
-      const timer = setInterval(()=>{
-        for (let i=0; i<digits.length; i++){
-          const temp = Math.floor(Math.random()*45) + 1;
-          digits[i].textContent = String(temp);
-        }
-        if (performance.now() - start >= duration){
-          clearInterval(timer);
+      const {wrap, copy, balls} = makeResultShell(runIndex);
 
-          // 최종 확정
-          const finalNums = pick6(pool);
-          line.classList.remove('rolling');
-          line.textContent = finalNums.join('   ');
+      // 최신 결과가 위로 오게
+      results.prepend(wrap);
 
-          // 복사 활성화
-          copy.disabled = false;
-          copy.style.opacity = '1';
-          copy.style.cursor = 'pointer';
+      // 슬롯처럼 1 -> 2 -> 3 -> ... 순서로 멈추게
+      balls.forEach((ball, i)=>{
+        let ticks = 0;
+        const base = 12;         // 최소 회전 횟수
+        const extra = i * 7;     // 뒤로 갈수록 더 오래
+        const total = base + extra;
 
-          copy.addEventListener('click', async ()=>{
-            const text = finalNums.join(' ');
-            try{
-              await navigator.clipboard.writeText(text);
-              copy.textContent = '복사됨';
-              setTimeout(()=> copy.textContent='복사', 900);
-            }catch(e){
-              copy.textContent = '복사 실패';
-              setTimeout(()=> copy.textContent='복사', 900);
+        const timer = setInterval(()=>{
+          ball.textContent = String(Math.floor(Math.random()*45)+1);
+          ticks++;
+
+          if (ticks >= total){
+            clearInterval(timer);
+            ball.classList.remove('isRolling');
+            ball.textContent = String(finalNums[i]);
+            ball.classList.add('pop');
+            setTimeout(()=> ball.classList.remove('pop'), 220);
+
+            // 마지막 공까지 끝나면 복사 활성화
+            if (i === 5){
+              copy.disabled = false;
+              copy.style.opacity = '1';
+              copy.style.cursor = 'pointer';
+              copy.addEventListener('click', async ()=>{
+                const text = finalNums.join(' ');
+                try{
+                  await navigator.clipboard.writeText(text);
+                  copy.textContent = '복사됨';
+                  setTimeout(()=> copy.textContent='복사', 900);
+                }catch(e){
+                  copy.textContent = '복사 실패';
+                  setTimeout(()=> copy.textContent='복사', 900);
+                }
+              }, {once:true});
             }
-          }, {once:true});
-        }
-      }, interval);
+          }
+        }, 60);
+      });
     }
 
     btnClear.addEventListener('click', ()=>{
