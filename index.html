@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>로또 번호 생성기 (제외 번호 선택)</title>
+  <meta name="description" content="원하지 않는 번호를 제외하고 로또 번호 6개를 랜덤으로 생성합니다. 제외 번호 체크 후 버튼 한 번으로 생성/복사까지." />
+  <style>
+    :root { --bg:#0b0f19; --card:#121a2a; --text:#e8eefc; --muted:#9fb0d0; --line:#22304d; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 22px 16px 40px; }
+    .top { display:flex; gap:16px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; }
+    h1 { margin: 0 0 6px; font-size: 22px; letter-spacing: -0.2px; }
+    .desc { margin:0; color: var(--muted); font-size: 14px; line-height: 1.4; }
+    .card { margin-top: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+    .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+    button {
+      appearance:none; border:1px solid var(--line); background:#1a2540; color:var(--text);
+      padding: 12px 14px; border-radius: 12px; cursor:pointer; font-weight: 700;
+    }
+    button:hover { filter: brightness(1.05); }
+    button:active { transform: translateY(1px); }
+    .btns { display:flex; gap:10px; flex-wrap:wrap; }
+    .hint { color: var(--muted); font-size: 12px; }
+
+    .grid {
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      gap: 8px;
+    }
+    @media (max-width: 720px) {
+      .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    }
+    .n {
+      display:flex; align-items:center; justify-content:center;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 6px;
+      background: rgba(255,255,255,0.03);
+      user-select:none;
+    }
+    .n input { width: 16px; height: 16px; margin: 0 8px 0 0; cursor:pointer; }
+    .n label { cursor:pointer; font-weight: 700; letter-spacing: 0.2px; }
+
+    .result {
+      margin-top: 14px;
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      min-height: 54px;
+    }
+    .ball {
+      width: 52px; height: 52px; border-radius: 999px;
+      display:flex; align-items:center; justify-content:center;
+      background: #0f1730;
+      border: 1px solid var(--line);
+      font-weight: 900; font-size: 18px;
+    }
+    .danger { color: #ffb4b4; }
+    .ok { color: #b7ffd3; }
+    .footer { margin-top: 14px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .sep { height:1px; background: var(--line); margin: 12px 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>로또 번호 생성기 (제외 번호 선택)</h1>
+        <p class="desc">원하지 않는 번호를 체크하면, 그 번호를 빼고 6개를 랜덤으로 뽑아줘. 결과는 바로 복사 가능.</p>
+      </div>
+      <div class="btns">
+        <button id="btnGen" type="button">번호 생성</button>
+        <button id="btnCopy" type="button">복사</button>
+        <button id="btnClear" type="button">제외 해제</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div>
+          <strong>제외할 번호</strong>
+          <div class="hint">체크된 번호는 생성에서 제외됨</div>
+        </div>
+        <div class="hint" id="countInfo">제외: 0개</div>
+      </div>
+
+      <div class="grid" id="grid"></div>
+
+      <div class="sep"></div>
+
+      <div class="row">
+        <div>
+          <strong>결과</strong>
+          <div class="hint" id="status">아직 생성 안 함</div>
+        </div>
+      </div>
+
+      <div class="result" id="result"></div>
+
+      <div class="footer">
+        ※ 이 도구는 무작위로 번호를 생성할 뿐, 당첨을 보장하지 않아.
+      </div>
+    </div>
+  </div>
+
+<script>
+  const grid = document.getElementById('grid');
+  const resultEl = document.getElementById('result');
+  const statusEl = document.getElementById('status');
+  const countInfo = document.getElementById('countInfo');
+  const btnGen = document.getElementById('btnGen');
+  const btnCopy = document.getElementById('btnCopy');
+  const btnClear = document.getElementById('btnClear');
+
+  let lastNumbers = [];
+
+  function pad2(n){ return String(n).padStart(2,'0'); }
+
+  function renderGrid() {
+    const frag = document.createDocumentFragment();
+    for (let i=1; i<=45; i++) {
+      const wrap = document.createElement('div');
+      wrap.className = 'n';
+
+      const id = 'n' + i;
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.id = id;
+      cb.dataset.num = String(i);
+
+      const label = document.createElement('label');
+      label.htmlFor = id;
+      label.textContent = pad2(i);
+
+      cb.addEventListener('change', updateCount);
+
+      wrap.appendChild(cb);
+      wrap.appendChild(label);
+      frag.appendChild(wrap);
+    }
+    grid.appendChild(frag);
+  }
+
+  function getExcludedSet() {
+    const set = new Set();
+    grid.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+      set.add(Number(cb.dataset.num));
+    });
+    return set;
+  }
+
+  function updateCount() {
+    const excluded = getExcludedSet();
+    countInfo.textContent = `제외: ${excluded.size}개`;
+  }
+
+  function pick6(excludedSet) {
+    const pool = [];
+    for (let i=1; i<=45; i++) {
+      if (!excludedSet.has(i)) pool.push(i);
+    }
+    if (pool.length < 6) return null;
+
+    // Fisher–Yates shuffle (부분만 뽑아도 되지만 간단하게)
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    const picked = pool.slice(0,6).sort((a,b)=>a-b);
+    return picked;
+  }
+
+  function renderResult(nums) {
+    resultEl.innerHTML = '';
+    nums.forEach(n => {
+      const ball = document.createElement('div');
+      ball.className = 'ball';
+      ball.textContent = pad2(n);
+      resultEl.appendChild(ball);
+    });
+  }
+
+  btnGen.addEventListener('click', () => {
+    const excluded = getExcludedSet();
+    const picked = pick6(excluded);
+
+    if (!picked) {
+      lastNumbers = [];
+      resultEl.innerHTML = '';
+      statusEl.innerHTML = `<span class="danger">제외가 너무 많아. 최소 6개는 남겨야 함.</span>`;
+      return;
+    }
+
+    lastNumbers = picked;
+    renderResult(picked);
+    statusEl.innerHTML = `<span class="ok">생성 완료</span> (제외 ${excluded.size}개 반영)`;
+  });
+
+  btnCopy.addEventListener('click', async () => {
+    if (!lastNumbers.length) {
+      statusEl.innerHTML = `<span class="danger">복사할 결과가 없음. 먼저 생성해.</span>`;
+      return;
+    }
+    const text = lastNumbers.map(pad2).join(' ');
+    try {
+      await navigator.clipboard.writeText(text);
+      statusEl.innerHTML = `<span class="ok">복사됨:</span> ${text}`;
+    } catch {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      statusEl.innerHTML = `<span class="ok">복사됨:</span> ${text}`;
+    }
+  });
+
+  btnClear.addEventListener('click', () => {
+    grid.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    updateCount();
+    lastNumbers = [];
+    resultEl.innerHTML = '';
+    statusEl.textContent = '제외 해제됨. 이제 번호 생성 누르면 됨';
+  });
+
+  renderGrid();
+  updateCount();
+</script>
+</body>
+</html>
