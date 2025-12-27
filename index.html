@@ -19,42 +19,13 @@
       --shadow: 0 18px 40px rgba(0,0,0,.35);
       --radius: 18px;
 
-      /* 기본(PC/태블릿) */
-      --h1: clamp(26px, 4.8vw, 44px);
-      --h2: clamp(18px, 2.8vw, 24px);
-      --p:  clamp(15px, 2.4vw, 18px);
+      --h1: clamp(24px, 4.8vw, 40px);
+      --p:  clamp(14px, 2.6vw, 18px);
+      --btn: clamp(20px, 4.0vw, 28px);
 
-      --btn: clamp(22px, 3.6vw, 30px);
-
-      /* 제외 숫자 타일 */
-      --numBtn: clamp(20px, 3.0vw, 26px);
-      --numBtnH: clamp(70px, 7.2vw, 86px);
-      --numExcludedLabel: 13px;
-
-      /* 결과 공 */
-      --ball: clamp(74px, 8.8vw, 92px);
-      --ballFont: clamp(30px, 3.6vw, 40px);
-      --gap: 14px;
-    }
-
-    /* 모바일에서 “확실히” 크게 (핵심) */
-    @media (max-width: 520px){
-      :root{
-        --h1: clamp(30px, 7.0vw, 40px);
-        --h2: clamp(22px, 5.4vw, 26px);
-        --p:  clamp(18px, 4.6vw, 20px);
-
-        --btn: clamp(26px, 6.6vw, 34px);
-
-        /* 여기서 숫자 체급을 올려버림 */
-        --numBtn: clamp(28px, 7.4vw, 34px);
-        --numBtnH: clamp(88px, 18.5vw, 112px);
-        --numExcludedLabel: 16px;
-
-        --ball: clamp(96px, 20vw, 120px);
-        --ballFont: clamp(40px, 9.6vw, 48px);
-        --gap: 12px;
-      }
+      --ball: clamp(72px, 9.4vw, 92px);
+      --ballFont: clamp(30px, 3.8vw, 40px);
+      --gap: 12px;
     }
 
     *{ box-sizing:border-box; }
@@ -72,21 +43,20 @@
     .wrap{
       max-width: 980px;
       margin: 0 auto;
-      padding: clamp(14px, 3vw, 28px);
-      padding-bottom: 120px;
+      padding: 14px 14px 120px;
     }
 
     header{
       display:flex;
       flex-direction:column;
       gap: 8px;
-      margin: 8px 0 16px;
+      margin: 6px 0 12px;
     }
     .title{
       font-size: var(--h1);
       font-weight: 950;
       letter-spacing: -0.02em;
-      line-height: 1.12;
+      line-height: 1.1;
     }
     .subtitle{
       font-size: var(--p);
@@ -97,7 +67,7 @@
     .grid{
       display:grid;
       grid-template-columns: 1fr;
-      gap: 16px;
+      gap: 14px;
     }
     @media (min-width: 920px){
       .grid{ grid-template-columns: 1.1fr .9fr; align-items:start; }
@@ -111,25 +81,46 @@
       overflow:hidden;
     }
     .hd{
-      padding: 16px 16px 12px;
+      padding: 14px 14px 10px;
       border-bottom: 1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.10);
     }
     .hd h2{
       margin:0;
-      font-size: var(--h2);
+      font-size: clamp(18px, 3.5vw, 22px);
       font-weight: 950;
       letter-spacing:-0.01em;
     }
     .hd p{
-      margin: 8px 0 0;
+      margin: 6px 0 0;
       font-size: var(--p);
       color: var(--muted);
       line-height:1.5;
     }
-    .bd{ padding: 16px; }
+    .bd{ padding: 14px; }
 
-    /* 버튼 */
+    .row{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin-top: 10px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      font-size: clamp(14px, 3.4vw, 16px);
+      font-weight: 900;
+      color: rgba(255,255,255,.92);
+    }
+    .pill strong{ font-size: clamp(16px, 4.0vw, 20px); }
+
     .btn{
       width:100%;
       border:0;
@@ -141,7 +132,6 @@
       transition: transform .06s ease, filter .12s ease, opacity .12s ease;
     }
     .btn:active{ transform: scale(.995); }
-    .btn:focus{ outline: 3px solid rgba(34,197,94,.35); outline-offset: 2px; }
 
     .btn-main{
       padding: 18px 16px;
@@ -150,146 +140,57 @@
       color: #06230f;
       box-shadow: 0 14px 28px rgba(34,197,94,.22);
     }
-    .btn-main:hover{ filter: brightness(1.04); }
-
     .btn-ghost{
-      padding: 14px 14px;
-      font-size: clamp(18px, 4.6vw, 22px);
+      padding: 12px 12px;
+      font-size: clamp(14px, 3.4vw, 16px);
       background: rgba(255,255,255,.06);
       color: rgba(255,255,255,.92);
       border: 1px solid rgba(255,255,255,.14);
       opacity: .95;
     }
-    .btn-ghost:hover{ opacity: 1; filter: brightness(1.06); }
 
-    .row{
-      display:flex;
-      gap: 10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-      margin-top: 12px;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 12px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      font-size: clamp(18px, 4.8vw, 20px);
-      font-weight: 900;
-      color: rgba(255,255,255,.92);
-    }
-    .pill strong{ font-size: clamp(20px, 5.4vw, 24px); }
-
-    /* 제외 숫자 */
-    .num-grid{
-      display:grid;
-      grid-template-columns: repeat(5, minmax(0,1fr)); /* 모바일 기준 5열 고정(가독성) */
-      gap: 12px;
-    }
-    @media (min-width: 680px){
-      .num-grid{ grid-template-columns: repeat(6, minmax(0,1fr)); }
-    }
-
-    .num{
-      height: var(--numBtnH);
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      font-weight: 1000;
-      font-size: var(--numBtn);
-      cursor:pointer;
-      transition: transform .06s ease, filter .12s ease, background .12s ease;
-      line-height: 1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position:relative;
-      padding-bottom: 18px; /* 아래 '제외' 자리 */
-    }
-    .num:active{ transform: scale(.99); }
-    .num:hover{ filter: brightness(1.06); }
-
-    .num.is-off{
-      background: rgba(239,68,68,.14);
-      border-color: rgba(239,68,68,.38);
-      color: #ffd1d1;
-    }
-    .num.is-off::after{
-      content:"제외";
-      position:absolute;
-      bottom: 10px;
-      font-size: var(--numExcludedLabel);
-      font-weight: 950;
-      opacity:.95;
-      letter-spacing: .02em;
-    }
-
-    /* 경고 */
-    .warn{
-      margin-top: 12px;
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(239,68,68,.12);
-      border: 1px solid rgba(239,68,68,.24);
-      color: rgba(255,255,255,.95);
-      font-size: var(--p);
-      font-weight: 850;
-      line-height: 1.5;
-      display:none;
-    }
-    .warn.show{ display:block; }
-
-    /* 결과 */
+    /* ====== 결과 공 ====== */
     .results{
       display:flex;
       flex-direction:column;
       gap: 12px;
-      margin-top: 14px;
+      margin-top: 12px;
     }
     .result{
-      padding: 14px;
+      padding: 12px;
       border-radius: 18px;
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.12);
-      overflow:hidden;
     }
     .result-top{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .idx{
-      font-size: clamp(18px, 4.8vw, 20px);
+      font-size: clamp(14px, 3.8vw, 16px);
       font-weight: 1000;
       color: rgba(255,255,255,.95);
     }
     .copy{
-      padding: 12px 14px;
+      padding: 10px 12px;
       border-radius: 14px;
       background: rgba(255,255,255,.08);
       border: 1px solid rgba(255,255,255,.14);
       color: rgba(255,255,255,.92);
       font-weight: 1000;
-      font-size: clamp(16px, 4.0vw, 16px);
+      font-size: clamp(13px, 3.4vw, 14px);
       cursor:pointer;
     }
-    .copy:hover{ filter: brightness(1.07); }
 
-    /* 공(번호가 뙇뙇) */
     .balls{
       display:flex;
       gap: var(--gap);
-      flex-wrap: nowrap;
-      overflow-x: auto;
+      overflow-x:auto;
       -webkit-overflow-scrolling: touch;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
       align-items:center;
     }
     .ball{
@@ -301,30 +202,95 @@
       justify-content:center;
       font-size: var(--ballFont);
       font-weight: 1000;
-      letter-spacing: 0.01em;
       background:
         radial-gradient(circle at 30% 28%, rgba(255,255,255,.24), rgba(255,255,255,.10) 35%, rgba(255,255,255,.08) 60%),
         rgba(255,255,255,.10);
       border: 2px solid rgba(255,255,255,.22);
-      box-shadow:
-        inset 0 10px 18px rgba(255,255,255,.06),
-        0 10px 22px rgba(0,0,0,.26);
-      transform: translateZ(0);
+      box-shadow: inset 0 10px 18px rgba(255,255,255,.06), 0 10px 22px rgba(0,0,0,.26);
       user-select:none;
     }
-    .ball.isRolling{
-      filter: blur(.25px);
-      opacity: .95;
-    }
-    .ball.pop{
-      animation: pop .18s ease-out both;
-    }
+    .ball.isRolling{ filter: blur(.25px); opacity:.95; }
+    .ball.pop{ animation: pop .18s ease-out both; }
     @keyframes pop{
       from{ transform: scale(.96); opacity:.85; }
       to{ transform: scale(1); opacity:1; }
     }
 
-    /* 하단 고정 바 */
+    /* ====== 모바일 “한 화면에 45개” 그리드 ======
+       9열 × 5행 = 45개 고정
+       화면 높이에 맞추려고 타일 높이를 vw로 제어
+    */
+    .num-grid{
+      display:grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 6px;
+    }
+
+    .num{
+      height: 9.5vw;          /* 화면 높이에 맞게 */
+      max-height: 54px;       /* 너무 커지지 않게 */
+      min-height: 38px;       /* 너무 작아지지 않게 */
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-weight: 1000;
+      font-size: 4.2vw;       /* 숫자 가독성 최대 */
+      max-font-size: 22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      position:relative;
+      line-height:1;
+      user-select:none;
+    }
+    @media (min-width: 520px){
+      /* 태블릿/PC: 기존처럼 6열로 넓게 */
+      .num-grid{ grid-template-columns: repeat(6, 1fr); gap: 10px; }
+      .num{
+        height: 78px;
+        font-size: 26px;
+        border-radius: 22px;
+      }
+    }
+
+    .num.is-off{
+      background: rgba(239,68,68,.14);
+      border-color: rgba(239,68,68,.38);
+      color: #ffd1d1;
+    }
+    /* 모바일에서 '제외' 글자 없애고 색으로만 구분(공간 확보) */
+    @media (max-width: 520px){
+      .num.is-off::after{ content:""; }
+    }
+    /* PC에선 '제외' 표시 유지 */
+    @media (min-width: 521px){
+      .num.is-off::after{
+        content:"제외";
+        position:absolute;
+        bottom: 10px;
+        font-size: 14px;
+        font-weight: 950;
+        opacity:.95;
+      }
+      .num{ padding-bottom: 18px; }
+    }
+
+    .warn{
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(239,68,68,.12);
+      border: 1px solid rgba(239,68,68,.24);
+      color: rgba(255,255,255,.95);
+      font-size: var(--p);
+      font-weight: 850;
+      line-height: 1.5;
+      display:none;
+    }
+    .warn.show{ display:block; }
+
     .stickyBar{
       position: fixed;
       left: 0;
@@ -339,7 +305,7 @@
     .stickyInner{
       max-width: 980px;
       margin: 0 auto;
-      padding: 0 clamp(14px, 3vw, 28px);
+      padding: 0 14px;
       display:flex;
       gap: 10px;
     }
@@ -355,7 +321,6 @@
     </header>
 
     <div class="grid">
-      <!-- 왼쪽: 결과 -->
       <section class="card">
         <div class="hd">
           <h2>생성 결과</h2>
@@ -363,21 +328,19 @@
         </div>
         <div class="bd">
           <div class="row">
-            <span class="pill">제외된 번호 <strong id="excludedCount">0</strong>개</span>
-            <button id="btnClear" class="btn btn-ghost" type="button">제외 전부 해제</button>
+            <span class="pill">제외 <strong id="excludedCount">0</strong>개</span>
+            <button id="btnClear" class="btn btn-ghost" type="button">제외 해제</button>
           </div>
 
           <div id="warn" class="warn" role="alert"></div>
-
           <div class="results" id="results" aria-live="polite"></div>
         </div>
       </section>
 
-      <!-- 오른쪽: 제외 -->
       <aside class="card">
         <div class="hd">
           <h2>제외 번호 선택</h2>
-          <p>숫자를 누르면 제외됩니다. 다시 누르면 해제됩니다.</p>
+          <p>눌러서 제외 / 다시 눌러서 해제</p>
         </div>
         <div class="bd">
           <div class="num-grid" id="numGrid" aria-label="제외할 번호 선택"></div>
@@ -386,7 +349,6 @@
     </div>
   </div>
 
-  <!-- 하단 고정 생성 버튼 -->
   <div class="stickyBar">
     <div class="stickyInner">
       <button id="btnGen" class="btn btn-main" type="button">🎲 번호 생성</button>
@@ -495,7 +457,7 @@
 
       const pool = availablePool();
       if (pool.length < 6){
-        showWarn('제외한 번호가 너무 많습니다. 최소 6개는 남겨야 생성됩니다.');
+        showWarn('제외가 너무 많습니다.');
         return;
       }
 
@@ -506,7 +468,6 @@
 
       results.prepend(wrap);
 
-      // 1 -> 2 -> 3 -> ... 순서로 멈춤
       balls.forEach((ball, i)=>{
         let ticks = 0;
         const base = 14;
